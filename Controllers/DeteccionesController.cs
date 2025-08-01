@@ -1,5 +1,5 @@
+using cabapi.DTOs;
 using cabapi.Models;
-using Empresa;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +48,7 @@ public class DeteccionesController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Deteccion>> Create([FromBody] CreateDeteccionRequest request)
+    public async Task<ActionResult<Deteccion>> Create([FromBody] DeteccionDTO request)
     {
         var deteccion = new Deteccion
         {
@@ -72,7 +72,7 @@ public class DeteccionesController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, [FromBody] UpdateDeteccionRequest request)
+    public async Task<ActionResult> Update(int id, [FromBody] DeteccionDTO request)
     {
         var deteccion = await _db.Detecciones.FindAsync(id);
         if (deteccion == null)
@@ -183,7 +183,7 @@ public class DeteccionesController : ControllerBase
         return Ok(estadisticasZonas);
     }
 
-    [HttpGet("estadisticas/tipos-populares")]
+    [HttpGet("estadisticas/populares")]
     [Authorize]
     public async Task<ActionResult> GetTiposPopulares()
     {
@@ -202,7 +202,7 @@ public class DeteccionesController : ControllerBase
         return Ok(tiposPopulares);
     }
 
-    [HttpGet("estadisticas/horarios-recurrentes")]
+    [HttpGet("estadisticas/horarios")]
     [Authorize]
     public async Task<ActionResult> GetHorariosRecurrentes()
     {
@@ -224,7 +224,7 @@ public class DeteccionesController : ControllerBase
         return Ok(horariosRecurrentes);
     }
 
-    [HttpGet("por-zona/{zonaId}")]
+    [HttpGet("zona/{zonaId}")]
     [Authorize]
     public async Task<ActionResult<IEnumerable<Deteccion>>> GetByZona(int zonaId)
     {
@@ -249,23 +249,4 @@ public class DeteccionesController : ControllerBase
 
         return Ok(deteccionesRecientes);
     }
-}
-
-// DTOs
-public class CreateDeteccionRequest
-{
-    public required string Tipo { get; set; }
-    public int ClasificadorId { get; set; }
-}
-
-public class UpdateDeteccionRequest
-{
-    public required string Tipo { get; set; }
-    public int ClasificadorId { get; set; }
-}
-
-public class ConfirmarClasificacionRequest
-{
-    public bool EsCorrecta { get; set; }
-    public string? TipoCorregido { get; set; }
 }

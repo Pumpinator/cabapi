@@ -1,5 +1,5 @@
+using cabapi.DTOs;
 using cabapi.Models;
-using Empresa;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +44,7 @@ public class ZonasController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Zona>> Create([FromBody] CreateZonaRequest request)
+    public async Task<ActionResult<Zona>> Create([FromBody] ZonaDTO request)
     {
         var zona = new Zona
         {
@@ -59,7 +59,7 @@ public class ZonasController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, [FromBody] UpdateZonaRequest request)
+    public async Task<ActionResult> Update(int id, [FromBody] ZonaDTO request)
     {
         var zona = await _db.Zonas.FindAsync(id);
         if (zona == null)
@@ -181,15 +181,4 @@ public class ZonasController : ControllerBase
             })
         });
     }
-}
-
-// DTOs
-public class CreateZonaRequest
-{
-    public required string Nombre { get; set; }
-}
-
-public class UpdateZonaRequest
-{
-    public required string Nombre { get; set; }
 }

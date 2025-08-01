@@ -1,5 +1,5 @@
+using cabapi.DTOs;
 using cabapi.Models;
-using Empresa;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,17 +25,17 @@ public class UsuariosController : ControllerBase
     }
 
     [HttpPost("ingresar")]
-    public async Task<ActionResult> Login([FromBody] LoginRequest request)
+    public async Task<ActionResult> Login([FromBody] LoginDTO request)
     {
         var usuario = await _db.Usuarios
             .FirstOrDefaultAsync(u => u.Correo == request.Correo);
 
-        if (usuario == null || !VerifyPassword(request.Password, usuario.Password))
+        if (usuario == null || !(Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(request.Password))) == usuario.Password))
         {
             return Unauthorized(new { message = "Credenciales inválidas" });
         }
 
-        var token = GenerateJwtToken(usuario);
+        var token = GenerateToken(usuario);
 
         return Ok(new
         {
@@ -77,7 +77,7 @@ public class UsuariosController : ControllerBase
     [Authorize]
     public async Task<ActionResult<Usuario>> GetProfile()
     {
-        var userId = GetCurrentUserId();
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         var usuario = await _db.Usuarios.FindAsync(userId);
 
         if (usuario == null)
@@ -100,7 +100,7 @@ public class UsuariosController : ControllerBase
         {
             Nombre = request.Nombre,
             Correo = request.Correo,
-            Password = HashPassword(request.Password)
+            Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(request.Password)))
         };
 
         _db.Usuarios.Add(usuario);
@@ -128,14 +128,14 @@ public class UsuariosController : ControllerBase
         usuario.Correo = request.Correo;
         if (!string.IsNullOrEmpty(request.Password))
         {
-            usuario.Password = HashPassword(request.Password);
+            usuario.Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(request.Password)));
         }
-        
+
         await _db.SaveChangesAsync();
 
-        if (GetCurrentUserId() == id)
+        if (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) == id)
         {
-            var token = GenerateJwtToken(usuario);
+            var token = GenerateToken(usuario);
             Response.Headers["Authorization"] = $"Bearer {token}";
         }
 
@@ -158,12 +158,10 @@ public class UsuariosController : ControllerBase
         return NoContent();
     }
 
-    private string GenerateJwtToken(Usuario usuario)
+    private string GenerateToken(Usuario usuario)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
-        var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"] ??
-        "CAB_Secret_Key_2025_UTL_Very_Long_Secret_Key_For_Security_Must_Be_At_Least_32_Characters"
-        );
+        var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
 
         var claims = new[]
         {
@@ -185,31 +183,4 @@ public class UsuariosController : ControllerBase
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
-
-    private static string HashPassword(string password)
-    {
-        return Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password)));
-    }
-
-    private static bool VerifyPassword(string password, string hashedPassword)
-    {
-        var hashToVerify = HashPassword(password);
-        return hashToVerify == hashedPassword;
-    }
-
-    private int GetCurrentUserId()
-    {
-        return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-    }
-
-    private string GetCurrentUserRole()
-    {
-        return User.FindFirst(ClaimTypes.Role)?.Value ?? "";
-    }
-}
-
-public class LoginRequest
-{
-    public required string Correo { get; set; }
-    public required string Password { get; set; }
 }

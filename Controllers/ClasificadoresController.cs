@@ -1,5 +1,5 @@
+using cabapi.DTOs;
 using cabapi.Models;
-using Empresa;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +46,7 @@ public class ClasificadoresController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Clasificador>> Create([FromBody] CreateClasificadorRequest request)
+    public async Task<ActionResult<Clasificador>> Create([FromBody] ClasificadorDTO request)
     {
         var clasificador = new Clasificador
         {
@@ -60,7 +60,6 @@ public class ClasificadoresController : ControllerBase
         _db.Clasificadores.Add(clasificador);
         await _db.SaveChangesAsync();
 
-        // Incluir zona para la respuesta
         await _db.Entry(clasificador)
             .Reference(c => c.Zona)
             .LoadAsync();
@@ -70,7 +69,7 @@ public class ClasificadoresController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult> Update(int id, [FromBody] UpdateClasificadorRequest request)
+    public async Task<ActionResult> Update(int id, [FromBody] ClasificadorDTO request)
     {
         var clasificador = await _db.Clasificadores.FindAsync(id);
         if (clasificador == null)
@@ -97,7 +96,6 @@ public class ClasificadoresController : ControllerBase
             return NotFound();
         }
 
-        // Verificar si tiene detecciones asociadas
         var tieneDetecciones = await _db.Detecciones.AnyAsync(d => d.ClasificadorId == id);
         if (tieneDetecciones)
         {
@@ -110,43 +108,7 @@ public class ClasificadoresController : ControllerBase
         return NoContent();
     }
 
-    // RF09 - Clasificador más cercano
-    [HttpPost("mas-cercano")]
-    [Authorize]
-    public async Task<ActionResult> GetMasCercano([FromBody] UbicacionRequest ubicacion)
-    {
-        var clasificadores = await _db.Clasificadores
-            .Include(c => c.Zona)
-            .ToListAsync();
-
-        if (!clasificadores.Any())
-        {
-            return NotFound(new { message = "No hay clasificadores disponibles" });
-        }
-
-        var clasificadorCercano = clasificadores
-            .Select(c => new
-            {
-                id = c.Id,
-                nombre = c.Nombre,
-                latitud = c.Latitud,
-                longitud = c.Longitud,
-                zona = c.Zona.Nombre,
-                distancia = CalcularDistancia(
-                    (double)ubicacion.Latitud, (double)ubicacion.Longitud,
-                    (double)c.Latitud, (double)c.Longitud)
-            })
-            .OrderBy(c => c.distancia)
-            .First();
-
-        return Ok(new
-        {
-            clasificador = clasificadorCercano,
-            instrucciones = $"El clasificador más cercano está a {clasificadorCercano.distancia:F0} metros de tu ubicación"
-        });
-    }
-
-    [HttpGet("por-zona/{zonaId}")]
+    [HttpGet("zona/{zonaId}")]
     [Authorize]
     public async Task<ActionResult<IEnumerable<Clasificador>>> GetByZona(int zonaId)
     {
@@ -178,44 +140,4 @@ public class ClasificadoresController : ControllerBase
 
         return Ok(estadisticas);
     }
-
-    private static double CalcularDistancia(double lat1, double lon1, double lat2, double lon2)
-    {
-        const double R = 6371000; // Radio de la Tierra en metros
-        var dLat = ToRadians(lat2 - lat1);
-        var dLon = ToRadians(lon2 - lon1);
-        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
-                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-        var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-        return R * c;
-    }
-
-    private static double ToRadians(double degrees)
-    {
-        return degrees * Math.PI / 180;
-    }
-}
-
-// DTOs
-public class CreateClasificadorRequest
-{
-    public required string Nombre { get; set; }
-    public decimal Latitud { get; set; }
-    public decimal Longitud { get; set; }
-    public int ZonaId { get; set; }
-}
-
-public class UpdateClasificadorRequest
-{
-    public required string Nombre { get; set; }
-    public decimal Latitud { get; set; }
-    public decimal Longitud { get; set; }
-    public int ZonaId { get; set; }
-}
-
-public class UbicacionRequest
-{
-    public decimal Latitud { get; set; }
-    public decimal Longitud { get; set; }
 }

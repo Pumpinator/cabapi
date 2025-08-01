@@ -21,7 +21,11 @@ namespace cabapi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Correo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaUltimoAcceso = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EnLinea = table.Column<bool>(type: "bit", nullable: false),
+                    Activo = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,8 +91,8 @@ namespace cabapi.Migrations
 
             migrationBuilder.InsertData(
                 table: "Usuarios",
-                columns: new[] { "Id", "Correo", "Nombre", "Password" },
-                values: new object[] { 1, "admin@utleon.edu.mx", "root", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=" });
+                columns: new[] { "Id", "Activo", "Correo", "EnLinea", "FechaCreacion", "FechaUltimoAcceso", "Nombre", "Password" },
+                values: new object[] { 1, true, "admin@utleon.edu.mx", false, new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "root", "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=" });
 
             migrationBuilder.InsertData(
                 table: "Zonas",
