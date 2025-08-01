@@ -438,3 +438,6 @@ appsettings.Development.json
 # wwwroot content (if using client-side build tools)
 wwwroot/dist/
 wwwroot/lib/
+
+# YOLO model files
+best.onnx
