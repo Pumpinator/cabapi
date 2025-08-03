@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.Fonts;
 
 namespace cabapi.Controllers;
 
@@ -83,12 +86,20 @@ public class InferenciasController : ControllerBase
                 return BadRequest(new { error = "No se pudo decodificar la imagen", success = false });
             }
 
+            var originalPath = Path.Combine("original.jpg");
+            await frame.SaveAsJpegAsync(originalPath);
+
             var results = await _yolo.DetectAsync(frame);
             var detectedObjects = results?.Count ?? 0;
 
             if (detectedObjects == 0)
             {
-                return Ok("Sin objetos detectados");
+                return Ok(new { 
+                    message = "Sin objetos detectados",
+                    wasteType = "no_valorizable",
+                    detectedObjects = 0,
+                    success = true,
+                });
             }
 
             var detectedClasses = new List<string>();

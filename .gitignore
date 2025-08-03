@@ -441,3 +441,4 @@ wwwroot/lib/
 
 # YOLO model files
 best.onnx
+original.jpg

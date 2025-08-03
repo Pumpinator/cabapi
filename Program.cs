@@ -5,6 +5,7 @@ using System.Text;
 using cabapi;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://0.0.0.0:5098");
 
 // Add services to the container.
 builder.Services.AddDbContext<CABDB>(options =>
@@ -48,6 +49,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -62,5 +64,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/api/health");
 
 app.Run();
