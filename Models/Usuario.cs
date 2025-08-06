@@ -10,7 +10,6 @@ public class Usuario
 
     public required string Correo { get; set; }
 
-    [JsonIgnore]
     public string Password { get; set; } = string.Empty;
 
     public DateTime FechaCreacion { get; set; } = DateTime.Now;

@@ -30,7 +30,7 @@ public class UsuariosController : ControllerBase
         var usuario = await _db.Usuarios
             .FirstOrDefaultAsync(u => u.Correo == request.Correo);
 
-        if (usuario == null || !(Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(request.Password))) == usuario.Password))
+        if (usuario == null || !VerifyPassword(request.Password, usuario.Password))
         {
             return Unauthorized(new { message = "Credenciales inválidas" });
         }
@@ -77,7 +77,12 @@ public class UsuariosController : ControllerBase
     [Authorize]
     public async Task<ActionResult<Usuario>> GetProfile()
     {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+        {
+            return BadRequest(new { message = "Token inválido" });
+        }
+
         var usuario = await _db.Usuarios.FindAsync(userId);
 
         if (usuario == null)
@@ -100,7 +105,7 @@ public class UsuariosController : ControllerBase
         {
             Nombre = request.Nombre,
             Correo = request.Correo,
-            Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(request.Password)))
+            Password = HashPassword(request.Password)
         };
 
         _db.Usuarios.Add(usuario);
@@ -128,17 +133,17 @@ public class UsuariosController : ControllerBase
         usuario.Correo = request.Correo;
         if (!string.IsNullOrEmpty(request.Password))
         {
-            usuario.Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(request.Password)));
+            usuario.Password = HashPassword(request.Password);
         }
 
         await _db.SaveChangesAsync();
 
-        if (int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) == id)
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out var currentUserId) && currentUserId == id)
         {
             var token = GenerateToken(usuario);
             Response.Headers["Authorization"] = $"Bearer {token}";
         }
-
 
         return NoContent();
     }
@@ -161,7 +166,8 @@ public class UsuariosController : ControllerBase
     private string GenerateToken(Usuario usuario)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
-        var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
+        var secretKey = jwtSettings["SecretKey"] ?? "CAB_Secret_Key_2025_UTL_Very_Long_Secret_Key_For_Security_Must_Be_At_Least_32_Characters";
+        var key = Encoding.ASCII.GetBytes(secretKey);
 
         var claims = new[]
         {
@@ -182,5 +188,30 @@ public class UsuariosController : ControllerBase
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    private string HashPassword(string password)
+    {
+        if (string.IsNullOrEmpty(password))
+        {
+            throw new ArgumentException("La contraseña no puede estar vacía", nameof(password));
+        }
+
+        using (var sha256 = SHA256.Create())
+        {
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(hashedBytes);
+        }
+    }
+
+    private bool VerifyPassword(string password, string hashedPassword)
+    {
+        if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(hashedPassword))
+        {
+            return false;
+        }
+
+        var hashedInput = HashPassword(password);
+        return hashedInput == hashedPassword;
     }
 }
