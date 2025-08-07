@@ -1,13 +1,7 @@
-using cabapi.DTOs;
 using cabapi.Models;
-using Compunet.YoloSharp;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.Fonts;
+using OpenAI;
+using OpenAI.Chat;
 
 namespace cabapi.Controllers;
 
@@ -16,59 +10,50 @@ namespace cabapi.Controllers;
 public class InferenciasController : ControllerBase
 {
     private readonly CABDB _db;
-    private readonly YoloPredictor _yolo;
-    private readonly string _modelPath = Path.Combine("best.onnx");
-
+    private readonly OpenAIClient _openAIClient;
     private readonly Dictionary<string, string> _wasteMapping = new()
     {
-        // Orgánicos
-        ["banana"] = "organico",
-        ["apple"] = "organico",
-        ["orange"] = "organico",
-        ["food"] = "organico",
+        ["organico"] = "organico",
         ["organic"] = "organico",
+        ["compostable"] = "organico",
+        ["biodegradable"] = "organico",
 
-        // Valorizables (Reciclables)
-        ["bottle"] = "valorizable",
-        ["plastic"] = "no_valorizable",
-        ["cardboard"] = "valorizable",
-        ["metal"] = "no_valorizable",
-        ["can"] = "valorizable",
-        ["paper"] = "no_valorizable",
-        ["glass"] = "no_valorizable",
+        ["valorizable"] = "valorizable",
+        ["reciclable"] = "valorizable",
+        ["recyclable"] = "valorizable",
 
-        // No valorizables
-        ["trash"] = "no_valorizable",
-        ["waste"] = "no_valorizable",
-        ["general"] = "no_valorizable"
+        ["no_valorizable"] = "no_valorizable",
+        ["no_reciclable"] = "no_valorizable",
+        ["basura"] = "no_valorizable",
+        ["trash"] = "no_valorizable"
     };
 
     public InferenciasController(CABDB db)
     {
         _db = db;
 
-        if (System.IO.File.Exists(_modelPath))
+        var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        if (string.IsNullOrEmpty(apiKey))
         {
-            _yolo = new YoloPredictor(_modelPath);
+            throw new InvalidOperationException("OpenAI API Key no configurada");
         }
-        else
-        {
-            throw new FileNotFoundException($"Modelo ONNX no encontrado: {_modelPath}");
-        }
+
+        _openAIClient = new OpenAIClient(apiKey);
     }
 
     [Consumes("multipart/form-data")]
-    [HttpPost]
-    public async Task<IActionResult> Predecir([FromForm] InferenciaDTO request)
+    [HttpPost("esp")]
+    [DisableRequestSizeLimit]
+    public async Task<IActionResult> ClasificarEsp32([FromForm] IFormFile imagen, [FromForm] int clasificadorId)
     {
         try
         {
-            if (request.Imagen == null)
+            if (imagen == null)
             {
                 return BadRequest(new { error = "No se encontró imagen en la petición", success = false });
             }
 
-            if (request.ClasificadorId <= 0)
+            if (clasificadorId <= 0)
             {
                 return BadRequest(new { error = "El id del clasificador es inválido", success = false });
             }
@@ -76,66 +61,25 @@ public class InferenciasController : ControllerBase
             byte[] imageBytes;
             using (var memoryStream = new MemoryStream())
             {
-                await request.Imagen.CopyToAsync(memoryStream);
+                await imagen.CopyToAsync(memoryStream);
                 imageBytes = memoryStream.ToArray();
             }
 
-            var frame = Image.Load<Rgb24>(imageBytes);
-            if (frame == null)
-            {
-                return BadRequest(new { error = "No se pudo decodificar la imagen", success = false });
-            }
-
             var originalPath = Path.Combine("original.jpg");
-            await frame.SaveAsJpegAsync(originalPath);
+            await System.IO.File.WriteAllBytesAsync(originalPath, imageBytes);
 
-            var results = await _yolo.DetectAsync(frame);
-            var detectedObjects = results?.Count ?? 0;
+            var wasteType = await ClasificarConOpenAI(imageBytes);
 
-            if (detectedObjects == 0)
+            if (wasteType == "reintentar")
             {
-                return Ok(new { 
-                    message = "Sin objetos detectados",
-                    wasteType = "no_valorizable",
-                    detectedObjects = 0,
-                    success = true,
-                });
-            }
-
-            var detectedClasses = new List<string>();
-
-            if (results != null)
-            {
-                foreach (var detection in results)
-                {
-                    if (detection.Confidence > 0.5f)
-                    {
-                        var className = detection.Name.ToString().ToLower();
-                        detectedClasses.Add(className);
-                    }
-                }
-            }
-
-            var wasteType = "no_valorizable";
-            foreach (var detectedClass in detectedClasses)
-            {
-                foreach (var mapping in _wasteMapping)
-                {
-                    if (detectedClass.Contains(mapping.Key))
-                    {
-                        wasteType = mapping.Value;
-                        break;
-                    }
-                }
-                if (wasteType != "no_valorizable")
-                    break;
+                return Ok("no_valorizable");
             }
 
             var deteccion = new Deteccion
             {
                 Tipo = wasteType,
                 FechaHora = DateTime.Now,
-                ClasificadorId = request.ClasificadorId
+                ClasificadorId = clasificadorId
             };
 
             _db.Detecciones.Add(deteccion);
@@ -147,5 +91,129 @@ public class InferenciasController : ControllerBase
         {
             return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}", success = false });
         }
+    }
+
+    [Consumes("multipart/form-data")]
+    [HttpPost("android")]
+    [DisableRequestSizeLimit]
+    public async Task<IActionResult> ClasificarAndroid([FromForm] IFormFile imagen)
+    {
+        try
+        {
+            if (imagen == null)
+            {
+                return BadRequest(new { error = "No se encontró imagen en la petición", success = false });
+            }
+
+            byte[] imageBytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                await imagen.CopyToAsync(memoryStream);
+                imageBytes = memoryStream.ToArray();
+            }
+
+            var wasteType = await ClasificarConOpenAI(imageBytes);
+
+            if (wasteType == "reintentar")
+            {
+                return Ok(new
+                {
+                    message = "No se pudo clasificar la imagen, por favor intente nuevamente con una imagen más clara",
+                    wasteType = "no_valorizable",
+                    success = false,
+                    shouldRetry = true,
+                    confidence = "low"
+                });
+            }
+
+            return Ok(new
+            {
+                message = GetWasteMessage(wasteType),
+                wasteType = wasteType,
+                success = true,
+                confidence = "high",
+                method = "openai-gpt4-vision",
+                timestamp = DateTime.UtcNow
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = $"Error interno del servidor: {ex.Message}", success = false });
+        }
+    }
+
+    private async Task<string> ClasificarConOpenAI(byte[] imageBytes)
+    {
+        try
+        {
+            var systemPrompt = @"
+Eres un experto clasificador de residuos. Tu tarea es analizar imágenes y clasificar el tipo de residuo presente.
+
+INSTRUCCIONES IMPORTANTES:
+1. Analiza cuidadosamente la imagen
+2. Identifica el objeto o residuo principal en la imagen
+3. Responde ÚNICAMENTE con una de estas tres palabras exactas:
+   - 'organico' para residuos orgánicos (comida, frutas, verduras, restos de comida, cáscaras, etc.)
+   - 'valorizable' para residuos reciclables (plástico, vidrio, metal, papel, cartón, latas, botellas, etc.)
+   - 'no_valorizable' para residuos no reciclables (pañales, chicles, colillas, papel higiénico usado, etc.)
+   - 'reintentar' si la imagen no es clara, no contiene residuos visibles, o no puedes determinar el tipo
+
+EJEMPLOS:
+- Cáscara de plátano → organico
+- Botella de plástico → valorizable
+- Pañal usado → no_valorizable
+- Imagen borrosa → reintentar
+
+Responde solo con la palabra correspondiente, sin explicaciones adicionales.";
+
+            var userPrompt = "Clasifica el tipo de residuo en esta imagen según las categorías especificadas.";
+
+            var chatClient = _openAIClient.GetChatClient("gpt-4o");
+
+            var messages = new List<ChatMessage>
+            {
+                new SystemChatMessage(systemPrompt),
+                new UserChatMessage(
+                    ChatMessageContentPart.CreateTextPart(userPrompt),
+                    ChatMessageContentPart.CreateImagePart(BinaryData.FromBytes(imageBytes), "image/jpeg")
+                )
+            };
+
+            var response = await chatClient.CompleteChatAsync(messages, new ChatCompletionOptions
+            {
+                MaxOutputTokenCount = 10,
+                Temperature = 0.1f
+            });
+
+            var classification = response.Value.Content[0].Text.Trim().ToLower();
+
+            if (_wasteMapping.ContainsKey(classification))
+            {
+                return _wasteMapping[classification];
+            }
+            else if (classification == "reintentar")
+            {
+                return "reintentar";
+            }
+            else
+            {
+                return "no_valorizable";
+            }
+        }
+        catch (Exception ex)
+        {
+            return "reintentar";
+        }
+    }
+
+    private string GetWasteMessage(string wasteType)
+    {
+        return wasteType switch
+        {
+            "organico" => "Residuo orgánico detectado. Debe ir en el contenedor de compostaje.",
+            "valorizable" => "Residuo reciclable detectado. Debe ir en el contenedor de reciclaje.",
+            "no_valorizable" => "Residuo no reciclable detectado. Debe ir en el contenedor de basura general.",
+            _ => "Tipo de residuo clasificado."
+        };
     }
 }

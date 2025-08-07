@@ -3,7 +3,6 @@ using cabapi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace cabapi.Controllers;
 
@@ -104,7 +103,6 @@ public class DeteccionesController : ControllerBase
     }
 
     [HttpGet("estadisticas")]
-    [Authorize]
     public async Task<ActionResult> GetEstadisticas()
     {
         var hoy = DateTime.Today;
@@ -160,7 +158,6 @@ public class DeteccionesController : ControllerBase
     }
 
     [HttpGet("estadisticas/zonas")]
-    [Authorize]
     public async Task<ActionResult> GetEstadisticasZonas()
     {
         var estadisticasZonas = await _db.Detecciones
@@ -203,7 +200,6 @@ public class DeteccionesController : ControllerBase
     }
 
     [HttpGet("estadisticas/horarios")]
-    [Authorize]
     public async Task<ActionResult> GetHorariosRecurrentes()
     {
         var horariosRecurrentes = await _db.Detecciones

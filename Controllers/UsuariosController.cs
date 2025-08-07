@@ -16,12 +16,10 @@ namespace cabapi.Controllers;
 public class UsuariosController : ControllerBase
 {
     private readonly CABDB _db;
-    private readonly IConfiguration _configuration;
 
-    public UsuariosController(CABDB db, IConfiguration configuration)
+    public UsuariosController(CABDB db)
     {
         _db = db;
-        _configuration = configuration;
     }
 
     [HttpPost("ingresar")]
@@ -165,8 +163,7 @@ public class UsuariosController : ControllerBase
 
     private string GenerateToken(Usuario usuario)
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = jwtSettings["SecretKey"] ?? "CAB_Secret_Key_2025_UTL_Very_Long_Secret_Key_For_Security_Must_Be_At_Least_32_Characters";
+        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
         var key = Encoding.ASCII.GetBytes(secretKey);
 
         var claims = new[]
@@ -181,8 +178,8 @@ public class UsuariosController : ControllerBase
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Issuer = jwtSettings["Issuer"] ?? "CAB-API",
-            Audience = jwtSettings["Audience"] ?? "CAB-Client"
+            Issuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+            Audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();

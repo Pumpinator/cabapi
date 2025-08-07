@@ -1,41 +1,53 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using cabapi;
 
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.IdentityModel.Tokens;
+using DotNetEnv;
+
+Env.Load();
+
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://0.0.0.0:5098");
+builder.WebHost.UseUrls(Environment.GetEnvironmentVariable("SERVER_URL") ?? "http://localhost:8080");
 
-// Add services to the container.
 builder.Services.AddDbContext<CABDB>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
 
-// JWT Configuration
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"] ?? "CAB_Secret_Key_2025_UTL_Very_Long_Secret_Key_For_Security_Must_Be_At_Least_32_Characters");
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = 10 * 1024 * 1024;
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
+    options.MultipartHeadersLengthLimit = 1024 * 1024;
+});
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
+});
 
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY")!)
+            ),
         ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
+        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
         ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
+        ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
     };
 });
-
-// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -45,15 +57,12 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -63,6 +72,7 @@ app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.MapHealthChecks("/api/health");
 
