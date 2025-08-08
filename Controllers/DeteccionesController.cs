@@ -232,6 +232,26 @@ public class DeteccionesController : ControllerBase
             .ToListAsync());
     }
 
+    [HttpGet("clasificador/{clasificadorId}")]
+    [Authorize]
+    public async Task<ActionResult<IEnumerable<Deteccion>>> GetByClasificador(int clasificadorId)
+    {
+        var grupos = await _db.Detecciones
+            .Where(d => d.ClasificadorId == clasificadorId)
+            .GroupBy(d => d.Tipo)
+            .Select(g => new { Tipo = g.Key, Count = g.Count() })
+            .ToListAsync();
+
+        var resultado = new
+        {
+            valorizable = grupos.FirstOrDefault(g => g.Tipo == "valorizable")?.Count ?? 0,
+            no_valorizable = grupos.FirstOrDefault(g => g.Tipo == "no_valorizable")?.Count ?? 0,
+            organico = grupos.FirstOrDefault(g => g.Tipo == "organico")?.Count ?? 0
+        };
+
+        return Ok(resultado);
+    }
+
     [HttpGet("recientes")]
     [Authorize]
     public async Task<ActionResult> GetRecientes([FromQuery] int limit = 10)

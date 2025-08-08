@@ -6,4 +6,5 @@ public class ClasificadorDTO
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
     public int ZonaId { get; set; }
+    public bool Activo { get; set; } = true;
 }

@@ -8,6 +8,8 @@ public class Zona
 
     public required string Nombre { get; set; }
 
+    public bool Activo { get; set; } = true;
+
     [JsonIgnore]
     public virtual ICollection<Clasificador> Clasificadores { get; set; } = new List<Clasificador>();
 }

@@ -18,6 +18,8 @@ public class Clasificador
 
     public virtual Zona Zona { get; set; } = null!;
 
+    public bool Activo { get; set; } = true;
+
     [JsonIgnore]
     public virtual ICollection<Deteccion> Detecciones { get; set; } = new List<Deteccion>();
 }
