@@ -43,7 +43,6 @@ namespace cabapi.Controllers
         }
 
         // PUT: api/Cotizacions/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCotizacion(int id, Cotizacion cotizacion)
         {
@@ -74,7 +73,6 @@ namespace cabapi.Controllers
         }
 
         // POST: api/Cotizacions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Cotizacion>> PostCotizacion(Cotizacion cotizacion)
         {
