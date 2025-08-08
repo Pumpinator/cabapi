@@ -82,7 +82,7 @@ namespace cabapi.Migrations
                     FechaUltimoAcceso = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()"),
                     EnLinea = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Rol = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false, defaultValue: "cliente")
                 },
                 constraints: table =>
                 {

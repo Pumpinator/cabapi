@@ -12,7 +12,7 @@ using cabapi;
 namespace cabapi.Migrations
 {
     [DbContext(typeof(CABDB))]
-    [Migration("20250808155856_InitialCreate")]
+    [Migration("20250808214352_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace cabapi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -819,7 +819,10 @@ namespace cabapi.Migrations
 
                     b.Property<string>("Rol")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasDefaultValue("cliente");
 
                     b.HasKey("Id");
 

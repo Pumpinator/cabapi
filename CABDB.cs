@@ -400,6 +400,7 @@ public class CABDB : DbContext
             usuario.Property(u => u.FechaUltimoAcceso).HasDefaultValueSql("GETDATE()");
             usuario.Property(u => u.EnLinea).HasDefaultValue(false);
             usuario.Property(u => u.Activo).HasDefaultValue(true);
+            usuario.Property(u => u.Rol).HasMaxLength(15).HasDefaultValue("cliente");
             usuario.HasIndex(u => u.Correo).IsUnique();
             usuario.HasData(usuarios);
         });
