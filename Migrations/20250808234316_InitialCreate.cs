@@ -22,9 +22,7 @@ namespace cabapi.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    UnidadMedida = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Stock = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    StockMinimo = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
@@ -82,7 +80,7 @@ namespace cabapi.Migrations
                     FechaUltimoAcceso = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()"),
                     EnLinea = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Rol = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false, defaultValue: "cliente")
+                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Cliente")
                 },
                 constraints: table =>
                 {
@@ -120,7 +118,7 @@ namespace cabapi.Migrations
                     PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     SubTotal = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Pendiente"),
+                    Estatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pendiente"),
                     FechaVencimiento = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Observaciones = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     RequirimientosEspeciales = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
@@ -144,8 +142,7 @@ namespace cabapi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductoId = table.Column<int>(type: "int", nullable: false),
                     MateriaPrimaId = table.Column<int>(type: "int", nullable: false),
-                    CantidadRequerida = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    UnidadMedida = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
+                    CantidadRequerida = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,7 +172,7 @@ namespace cabapi.Migrations
                     ProveedorId = table.Column<int>(type: "int", nullable: false),
                     SubTotal = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Pendiente"),
+                    Estatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pendiente"),
                     Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -226,7 +223,7 @@ namespace cabapi.Migrations
                     PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     SubTotal = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Pendiente"),
+                    Estatus = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pendiente"),
                     DireccionEnvio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
@@ -323,14 +320,14 @@ namespace cabapi.Migrations
 
             migrationBuilder.InsertData(
                 table: "MateriasPrimas",
-                columns: new[] { "Id", "Activo", "Descripcion", "FechaCreacion", "Nombre", "PrecioUnitario", "Stock", "StockMinimo", "UnidadMedida" },
+                columns: new[] { "Id", "Activo", "Descripcion", "FechaCreacion", "Nombre", "PrecioUnitario", "Stock" },
                 values: new object[,]
                 {
-                    { 1, true, "Módulo miniatura microcontrolador con cámara integrada para IoT", new DateTime(2025, 6, 1, 9, 0, 0, 0, DateTimeKind.Unspecified), "ESP32-CAM", 350.00m, 5.00m, 10.00m, "Pieza" },
-                    { 2, true, "Módulo microcontrolador con capacidades mejoradas para IoT", new DateTime(2025, 6, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), "ESP32-S3", 650.00m, 10.00m, 20.00m, "Pieza" },
-                    { 3, true, "Servo motor SG90 de 9g", new DateTime(2025, 6, 3, 11, 0, 0, 0, DateTimeKind.Unspecified), "SG90", 120.00m, 75.00m, 15.00m, "Pieza" },
-                    { 4, true, "Sensor de distancia ultrasónico HC-SR04", new DateTime(2025, 6, 4, 12, 0, 0, 0, DateTimeKind.Unspecified), "HC SR04", 45.00m, 30.00m, 5.00m, "Pieza" },
-                    { 5, true, "Carcasa plástica resistente para dispositivos IoT", new DateTime(2025, 6, 5, 13, 0, 0, 0, DateTimeKind.Unspecified), "Carcasa Plástica", 85.00m, 100.00m, 20.00m, "Pieza" }
+                    { 1, true, "Módulo miniatura microcontrolador con cámara integrada para IoT", new DateTime(2025, 6, 1, 9, 0, 0, 0, DateTimeKind.Unspecified), "ESP32-CAM", 350.00m, 5.00m },
+                    { 2, true, "Módulo microcontrolador con capacidades mejoradas para IoT", new DateTime(2025, 6, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), "ESP32-S3", 650.00m, 10.00m },
+                    { 3, true, "Servo motor SG90 de 9g", new DateTime(2025, 6, 3, 11, 0, 0, 0, DateTimeKind.Unspecified), "SG90", 120.00m, 75.00m },
+                    { 4, true, "Sensor de distancia ultrasónico HC-SR04", new DateTime(2025, 6, 4, 12, 0, 0, 0, DateTimeKind.Unspecified), "HC SR04", 45.00m, 30.00m },
+                    { 5, true, "Carcasa plástica resistente para dispositivos IoT", new DateTime(2025, 6, 5, 13, 0, 0, 0, DateTimeKind.Unspecified), "Carcasa Plástica", 85.00m, 100.00m }
                 });
 
             migrationBuilder.InsertData(
@@ -357,10 +354,14 @@ namespace cabapi.Migrations
                 columns: new[] { "Id", "Activo", "Correo", "FechaCreacion", "FechaUltimoAcceso", "Nombre", "Password", "Rol" },
                 values: new object[,]
                 {
-                    { 1, true, "superadmin@utleon.edu.mx", new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Super Administrador", "75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8=", "superadmin" },
-                    { 2, true, "admin@utleon.edu.mx", new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Administrador", "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=", "admin" },
-                    { 3, true, "alejandro@gmail.com", new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Alejandro", "F/4GrE2x2dga5lksv3QVL2rkuo+kjyF4kxQPQW//7lo=", "cliente" }
+                    { 1, true, "superadmin@utleon.edu.mx", new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Super Administrador", "75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8=", "SuperAdmin" },
+                    { 2, true, "admin@utleon.edu.mx", new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Administrador", "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=", "Admin" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Usuarios",
+                columns: new[] { "Id", "Activo", "Correo", "FechaCreacion", "FechaUltimoAcceso", "Nombre", "Password" },
+                values: new object[] { 3, true, "alejandro@gmail.com", new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Alejandro", "F/4GrE2x2dga5lksv3QVL2rkuo+kjyF4kxQPQW//7lo=" });
 
             migrationBuilder.InsertData(
                 table: "Zonas",
@@ -401,43 +402,44 @@ namespace cabapi.Migrations
 
             migrationBuilder.InsertData(
                 table: "Compras",
-                columns: new[] { "Id", "Estado", "FechaCompra", "NumeroCompra", "Observaciones", "ProveedorId", "SubTotal", "Total" },
+                columns: new[] { "Id", "Estatus", "FechaCompra", "NumeroCompra", "Observaciones", "ProveedorId", "SubTotal", "Total" },
                 values: new object[,]
                 {
                     { 1, "Completada", new DateTime(2025, 7, 1, 10, 0, 0, 0, DateTimeKind.Unspecified), "C-2025-001", "Compra de componentes ESP32-CAM para producción mensual", 1, 17500.00m, 20300.00m },
-                    { 2, "En Proceso", new DateTime(2025, 7, 5, 14, 30, 0, 0, DateTimeKind.Unspecified), "C-2025-002", "Pedido de carcasas plásticas y accesorios", 2, 8500.00m, 9860.00m }
+                    { 2, "EnProceso", new DateTime(2025, 7, 5, 14, 30, 0, 0, DateTimeKind.Unspecified), "C-2025-002", "Pedido de carcasas plásticas y accesorios", 2, 8500.00m, 9860.00m }
                 });
 
             migrationBuilder.InsertData(
                 table: "Cotizaciones",
-                columns: new[] { "Id", "Cantidad", "CorreoCliente", "EmpresaCliente", "Estado", "FechaCotizacion", "FechaVencimiento", "NombreCliente", "NumeroCotizacion", "Observaciones", "PrecioUnitario", "ProductoId", "RequirimientosEspeciales", "SubTotal", "TelefonoCliente", "Total" },
-                values: new object[,]
-                {
-                    { 1, 5, "maria.gonzalez@empresa.com", "Corporativo del Bajío SA", "Pendiente", new DateTime(2025, 7, 20, 9, 15, 0, 0, DateTimeKind.Unspecified), null, "María González", "COT-2025-001", "Cotización para implementación en 5 sucursales", 4200.00m, 2, "Necesitan capacitación del personal y soporte técnico por 6 meses", 21000.00m, "477-987-6543", 24360.00m },
-                    { 2, 3, "roberto.h@hotel.com", "Hotel Ejecutivo León", "Aprobada", new DateTime(2025, 7, 22, 16, 20, 0, 0, DateTimeKind.Unspecified), null, "Roberto Hernández", "COT-2025-002", "Instalación en lobby, restaurante y áreas comunes", 4200.00m, 2, "Integración con sistema de gestión hotelera existente", 12600.00m, "477-456-7890", 14616.00m }
-                });
+                columns: new[] { "Id", "Cantidad", "CorreoCliente", "EmpresaCliente", "FechaCotizacion", "FechaVencimiento", "NombreCliente", "NumeroCotizacion", "Observaciones", "PrecioUnitario", "ProductoId", "RequirimientosEspeciales", "SubTotal", "TelefonoCliente", "Total" },
+                values: new object[] { 1, 5, "maria.gonzalez@empresa.com", "Corporativo del Bajío SA", new DateTime(2025, 7, 20, 9, 15, 0, 0, DateTimeKind.Unspecified), null, "María González", "COT-2025-001", "Cotización para implementación en 5 sucursales", 4200.00m, 2, "Necesitan capacitación del personal y soporte técnico por 6 meses", 21000.00m, "477-987-6543", 24360.00m });
+
+            migrationBuilder.InsertData(
+                table: "Cotizaciones",
+                columns: new[] { "Id", "Cantidad", "CorreoCliente", "EmpresaCliente", "Estatus", "FechaCotizacion", "FechaVencimiento", "NombreCliente", "NumeroCotizacion", "Observaciones", "PrecioUnitario", "ProductoId", "RequirimientosEspeciales", "SubTotal", "TelefonoCliente", "Total" },
+                values: new object[] { 2, 3, "roberto.h@hotel.com", "Hotel Ejecutivo León", "Aprobada", new DateTime(2025, 7, 22, 16, 20, 0, 0, DateTimeKind.Unspecified), null, "Roberto Hernández", "COT-2025-002", "Instalación en lobby, restaurante y áreas comunes", 4200.00m, 2, "Integración con sistema de gestión hotelera existente", 12600.00m, "477-456-7890", 14616.00m });
 
             migrationBuilder.InsertData(
                 table: "ProductoMateriasPrimas",
-                columns: new[] { "Id", "CantidadRequerida", "MateriaPrimaId", "ProductoId", "UnidadMedida" },
+                columns: new[] { "Id", "CantidadRequerida", "MateriaPrimaId", "ProductoId" },
                 values: new object[,]
                 {
-                    { 1, 1.00m, 1, 1, "Pieza" },
-                    { 2, 1.00m, 4, 1, "Pieza" },
-                    { 3, 1.00m, 5, 1, "Pieza" },
-                    { 4, 1.00m, 2, 2, "Pieza" },
-                    { 5, 1.00m, 5, 2, "Pieza" },
-                    { 6, 1.00m, 3, 2, "Pieza" },
-                    { 7, 1.00m, 4, 2, "Pieza" }
+                    { 1, 1.00m, 1, 1 },
+                    { 2, 1.00m, 4, 1 },
+                    { 3, 1.00m, 5, 1 },
+                    { 4, 1.00m, 2, 2 },
+                    { 5, 1.00m, 5, 2 },
+                    { 6, 1.00m, 3, 2 },
+                    { 7, 1.00m, 4, 2 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Ventas",
-                columns: new[] { "Id", "Cantidad", "DireccionEnvio", "Estado", "FechaVenta", "NumeroVenta", "Observaciones", "PrecioUnitario", "ProductoId", "SubTotal", "Total", "UsuarioId" },
+                columns: new[] { "Id", "Cantidad", "DireccionEnvio", "Estatus", "FechaVenta", "NumeroVenta", "Observaciones", "PrecioUnitario", "ProductoId", "SubTotal", "Total", "UsuarioId" },
                 values: new object[,]
                 {
-                    { 1, 2, "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.", "entregada", new DateTime(2025, 7, 10, 15, 30, 0, 0, DateTimeKind.Unspecified), "V-2025-001", "Instalación en edificios A y B de la universidad", 2500.00m, 1, 5000.00m, 5800.00m, 3 },
-                    { 2, 1, "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.", "en_proceso", new DateTime(2025, 7, 15, 11, 45, 0, 0, DateTimeKind.Unspecified), "V-2025-002", "Sistema para cafetería principal", 4200.00m, 2, 4200.00m, 4872.00m, 3 }
+                    { 1, 2, "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.", "Entregada", new DateTime(2025, 7, 10, 15, 30, 0, 0, DateTimeKind.Unspecified), "V-2025-001", "Instalación en edificios A y B de la universidad", 2500.00m, 1, 5000.00m, 5800.00m, 3 },
+                    { 2, 1, "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.", "EnProceso", new DateTime(2025, 7, 15, 11, 45, 0, 0, DateTimeKind.Unspecified), "V-2025-002", "Sistema para cafetería principal", 4200.00m, 2, 4200.00m, 4872.00m, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -454,9 +456,9 @@ namespace cabapi.Migrations
                 columns: new[] { "Id", "ClasificadorId", "FechaHora", "Tipo" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "organico" },
-                    { 2, 2, new DateTime(2025, 7, 6, 12, 15, 0, 0, DateTimeKind.Unspecified), "valorizable" },
-                    { 3, 3, new DateTime(2025, 7, 6, 12, 30, 0, 0, DateTimeKind.Unspecified), "no_valorizable" }
+                    { 1, 1, new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified), "Organico" },
+                    { 2, 2, new DateTime(2025, 7, 6, 12, 15, 0, 0, DateTimeKind.Unspecified), "Valorizable" },
+                    { 3, 3, new DateTime(2025, 7, 6, 12, 30, 0, 0, DateTimeKind.Unspecified), "NoValorizable" }
                 });
 
             migrationBuilder.CreateIndex(

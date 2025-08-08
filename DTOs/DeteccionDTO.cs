@@ -2,6 +2,6 @@ namespace cabapi.DTOs;
 
 public class DeteccionDTO
 {
-    public required string Tipo { get; set; }
+    public required Tipo Tipo { get; set; } // Organico, Valorizable, NoValorizable
     public int ClasificadorId { get; set; }
 }

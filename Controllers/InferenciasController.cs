@@ -70,7 +70,7 @@ public class InferenciasController : ControllerBase
 
             var wasteType = await ClasificarConOpenAI(imageBytes);
 
-            if (wasteType == "reintentar")
+            if (wasteType == Tipo.Reintentar)
             {
                 return Ok("no_valorizable");
             }
@@ -85,7 +85,7 @@ public class InferenciasController : ControllerBase
             _db.Detecciones.Add(deteccion);
             await _db.SaveChangesAsync();
 
-            return Ok(wasteType);
+            return Ok(wasteType.ToString().ToLower());
         }
         catch (Exception ex)
         {
@@ -114,12 +114,12 @@ public class InferenciasController : ControllerBase
 
             var wasteType = await ClasificarConOpenAI(imageBytes);
 
-            if (wasteType == "reintentar")
+            if (wasteType == Tipo.Reintentar)
             {
                 return Ok(new
                 {
                     message = "No se pudo clasificar la imagen, por favor intente nuevamente con una imagen más clara",
-                    wasteType = "no_valorizable",
+                    wasteType = Tipo.NoValorizable,
                     success = false,
                     shouldRetry = true,
                     confidence = "low"
@@ -128,7 +128,6 @@ public class InferenciasController : ControllerBase
 
             return Ok(new
             {
-                message = GetWasteMessage(wasteType),
                 wasteType = wasteType,
                 success = true,
                 confidence = "high",
@@ -142,7 +141,7 @@ public class InferenciasController : ControllerBase
         }
     }
 
-    private async Task<string> ClasificarConOpenAI(byte[] imageBytes)
+    private async Task<Tipo> ClasificarConOpenAI(byte[] imageBytes)
     {
         try
         {
@@ -187,33 +186,18 @@ Responde solo con la palabra correspondiente, sin explicaciones adicionales.";
 
             var classification = response.Value.Content[0].Text.Trim().ToLower();
 
-            if (_wasteMapping.ContainsKey(classification))
+            if (_wasteMapping.TryGetValue(classification, out var wasteType))
             {
-                return _wasteMapping[classification];
+                return Enum.Parse<Tipo>(wasteType, true);
             }
-            else if (classification == "reintentar")
-            {
-                return "reintentar";
-            }
-            else
-            {
-                return "no_valorizable";
-            }
-        }
-        catch (Exception ex)
-        {
-            return "reintentar";
-        }
-    }
 
-    private string GetWasteMessage(string wasteType)
-    {
-        return wasteType switch
+            // Si no se puede mapear la clasificación, retornar "reintentar"
+            return Tipo.Reintentar;
+        }
+        catch
         {
-            "organico" => "Residuo orgánico detectado. Debe ir en el contenedor de compostaje.",
-            "valorizable" => "Residuo reciclable detectado. Debe ir en el contenedor de reciclaje.",
-            "no_valorizable" => "Residuo no reciclable detectado. Debe ir en el contenedor de basura general.",
-            _ => "Tipo de residuo clasificado."
-        };
+            // En caso de error, retornar "reintentar"
+            return Tipo.Reintentar;
+        }
     }
 }

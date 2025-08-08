@@ -28,7 +28,7 @@ public class Cotizacion
 
     public decimal Total { get; set; }
 
-    public string Estado { get; set; } = "Pendiente"; // Pendiente, Enviada, Aprobada, Rechazada
+    public Estatus Estatus { get; set; } = Estatus.Pendiente; // Pendiente, Aceptada, Rechazada, Expirada
 
     public DateTime? FechaVencimiento { get; set; }
 

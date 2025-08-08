@@ -166,11 +166,10 @@ namespace cabapi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Estado")
+                    b.Property<string>("Estatus")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Pendiente");
 
                     b.Property<DateTime>("FechaCompra")
@@ -206,7 +205,7 @@ namespace cabapi.Migrations
                         new
                         {
                             Id = 1,
-                            Estado = "Completada",
+                            Estatus = "Completada",
                             FechaCompra = new DateTime(2025, 7, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             NumeroCompra = "C-2025-001",
                             Observaciones = "Compra de componentes ESP32-CAM para producción mensual",
@@ -217,7 +216,7 @@ namespace cabapi.Migrations
                         new
                         {
                             Id = 2,
-                            Estado = "En Proceso",
+                            Estatus = "EnProceso",
                             FechaCompra = new DateTime(2025, 7, 5, 14, 30, 0, 0, DateTimeKind.Unspecified),
                             NumeroCompra = "C-2025-002",
                             Observaciones = "Pedido de carcasas plásticas y accesorios",
@@ -299,11 +298,10 @@ namespace cabapi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Estado")
+                    b.Property<string>("Estatus")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Pendiente");
 
                     b.Property<DateTime>("FechaCotizacion")
@@ -362,7 +360,7 @@ namespace cabapi.Migrations
                             Cantidad = 5,
                             CorreoCliente = "maria.gonzalez@empresa.com",
                             EmpresaCliente = "Corporativo del Bajío SA",
-                            Estado = "Pendiente",
+                            Estatus = "Pendiente",
                             FechaCotizacion = new DateTime(2025, 7, 20, 9, 15, 0, 0, DateTimeKind.Unspecified),
                             NombreCliente = "María González",
                             NumeroCotizacion = "COT-2025-001",
@@ -380,7 +378,7 @@ namespace cabapi.Migrations
                             Cantidad = 3,
                             CorreoCliente = "roberto.h@hotel.com",
                             EmpresaCliente = "Hotel Ejecutivo León",
-                            Estado = "Aprobada",
+                            Estatus = "Aprobada",
                             FechaCotizacion = new DateTime(2025, 7, 22, 16, 20, 0, 0, DateTimeKind.Unspecified),
                             NombreCliente = "Roberto Hernández",
                             NumeroCotizacion = "COT-2025-002",
@@ -427,21 +425,21 @@ namespace cabapi.Migrations
                             Id = 1,
                             ClasificadorId = 1,
                             FechaHora = new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Tipo = "organico"
+                            Tipo = "Organico"
                         },
                         new
                         {
                             Id = 2,
                             ClasificadorId = 2,
                             FechaHora = new DateTime(2025, 7, 6, 12, 15, 0, 0, DateTimeKind.Unspecified),
-                            Tipo = "valorizable"
+                            Tipo = "Valorizable"
                         },
                         new
                         {
                             Id = 3,
                             ClasificadorId = 3,
                             FechaHora = new DateTime(2025, 7, 6, 12, 30, 0, 0, DateTimeKind.Unspecified),
-                            Tipo = "no_valorizable"
+                            Tipo = "NoValorizable"
                         });
                 });
 
@@ -479,14 +477,6 @@ namespace cabapi.Migrations
                     b.Property<decimal>("Stock")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<decimal>("StockMinimo")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("UnidadMedida")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasKey("Id");
 
                     b.ToTable("MateriasPrimas");
@@ -500,9 +490,7 @@ namespace cabapi.Migrations
                             FechaCreacion = new DateTime(2025, 6, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "ESP32-CAM",
                             PrecioUnitario = 350.00m,
-                            Stock = 5.00m,
-                            StockMinimo = 10.00m,
-                            UnidadMedida = "Pieza"
+                            Stock = 5.00m
                         },
                         new
                         {
@@ -512,9 +500,7 @@ namespace cabapi.Migrations
                             FechaCreacion = new DateTime(2025, 6, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "ESP32-S3",
                             PrecioUnitario = 650.00m,
-                            Stock = 10.00m,
-                            StockMinimo = 20.00m,
-                            UnidadMedida = "Pieza"
+                            Stock = 10.00m
                         },
                         new
                         {
@@ -524,9 +510,7 @@ namespace cabapi.Migrations
                             FechaCreacion = new DateTime(2025, 6, 3, 11, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "SG90",
                             PrecioUnitario = 120.00m,
-                            Stock = 75.00m,
-                            StockMinimo = 15.00m,
-                            UnidadMedida = "Pieza"
+                            Stock = 75.00m
                         },
                         new
                         {
@@ -536,9 +520,7 @@ namespace cabapi.Migrations
                             FechaCreacion = new DateTime(2025, 6, 4, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "HC SR04",
                             PrecioUnitario = 45.00m,
-                            Stock = 30.00m,
-                            StockMinimo = 5.00m,
-                            UnidadMedida = "Pieza"
+                            Stock = 30.00m
                         },
                         new
                         {
@@ -548,9 +530,7 @@ namespace cabapi.Migrations
                             FechaCreacion = new DateTime(2025, 6, 5, 13, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Carcasa Plástica",
                             PrecioUnitario = 85.00m,
-                            Stock = 100.00m,
-                            StockMinimo = 20.00m,
-                            UnidadMedida = "Pieza"
+                            Stock = 100.00m
                         });
                 });
 
@@ -643,10 +623,6 @@ namespace cabapi.Migrations
                     b.Property<int>("ProductoId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UnidadMedida")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MateriaPrimaId");
@@ -661,56 +637,49 @@ namespace cabapi.Migrations
                             Id = 1,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 1,
-                            ProductoId = 1,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 1
                         },
                         new
                         {
                             Id = 2,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 4,
-                            ProductoId = 1,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 1
                         },
                         new
                         {
                             Id = 3,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 5,
-                            ProductoId = 1,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 1
                         },
                         new
                         {
                             Id = 4,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 2,
-                            ProductoId = 2,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 2
                         },
                         new
                         {
                             Id = 5,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 5,
-                            ProductoId = 2,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 2
                         },
                         new
                         {
                             Id = 6,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 3,
-                            ProductoId = 2,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 2
                         },
                         new
                         {
                             Id = 7,
                             CantidadRequerida = 1.00m,
                             MateriaPrimaId = 4,
-                            ProductoId = 2,
-                            UnidadMedida = "Pieza"
+                            ProductoId = 2
                         });
                 });
 
@@ -817,9 +786,8 @@ namespace cabapi.Migrations
                     b.Property<string>("Rol")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)")
-                        .HasDefaultValue("cliente");
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Cliente");
 
                     b.HasKey("Id");
 
@@ -839,7 +807,7 @@ namespace cabapi.Migrations
                             FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Super Administrador",
                             Password = "75K3eLr+dx6JJFuJ7LwIpEpOFmwGZZkRiB84PURz6U8=",
-                            Rol = "superadmin"
+                            Rol = "SuperAdmin"
                         },
                         new
                         {
@@ -851,7 +819,7 @@ namespace cabapi.Migrations
                             FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Administrador",
                             Password = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
-                            Rol = "admin"
+                            Rol = "Admin"
                         },
                         new
                         {
@@ -863,7 +831,7 @@ namespace cabapi.Migrations
                             FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Alejandro",
                             Password = "F/4GrE2x2dga5lksv3QVL2rkuo+kjyF4kxQPQW//7lo=",
-                            Rol = "cliente"
+                            Rol = "Cliente"
                         });
                 });
 
@@ -882,11 +850,10 @@ namespace cabapi.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Estado")
+                    b.Property<string>("Estatus")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Pendiente");
 
                     b.Property<DateTime>("FechaVenta")
@@ -932,7 +899,7 @@ namespace cabapi.Migrations
                             Id = 1,
                             Cantidad = 2,
                             DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
-                            Estado = "entregada",
+                            Estatus = "Entregada",
                             FechaVenta = new DateTime(2025, 7, 10, 15, 30, 0, 0, DateTimeKind.Unspecified),
                             NumeroVenta = "V-2025-001",
                             Observaciones = "Instalación en edificios A y B de la universidad",
@@ -947,7 +914,7 @@ namespace cabapi.Migrations
                             Id = 2,
                             Cantidad = 1,
                             DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
-                            Estado = "en_proceso",
+                            Estatus = "EnProceso",
                             FechaVenta = new DateTime(2025, 7, 15, 11, 45, 0, 0, DateTimeKind.Unspecified),
                             NumeroVenta = "V-2025-002",
                             Observaciones = "Sistema para cafetería principal",
