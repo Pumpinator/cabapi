@@ -49,6 +49,18 @@ public class UsuariosController : ControllerBase
 
     [HttpGet]
     [Authorize]
+    public async Task<ActionResult<Usuario>> GetUsuario(int id)
+    {
+        var usuario = await _db.Usuarios.FindAsync(id);
+        if (usuario == null)
+        {
+            return NotFound();
+        }
+        return usuario;
+    }
+
+    [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<Usuario>>> GetAll()
     {
         return Ok(await _db.Usuarios
