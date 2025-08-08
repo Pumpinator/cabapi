@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-﻿namespace cabapi.Models
-{
-    public class Venta
-    {
-        public int Id { get; set; }
-        public int UsuarioId { get; set; } 
-        public int[] ProductoId { get; set; }
-    }
-=======
 using System.Text.Json.Serialization;
 
 namespace cabapi.Models;
@@ -43,5 +33,4 @@ public class Venta
 
     [JsonIgnore]
     public virtual Producto Producto { get; set; } = null!;
->>>>>>> ce01e5a (modelos incompletos)
 }

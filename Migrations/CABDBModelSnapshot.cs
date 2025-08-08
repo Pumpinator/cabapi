@@ -178,9 +178,6 @@ namespace cabapi.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<decimal>("Impuestos")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<string>("NumeroCompra")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -211,7 +208,6 @@ namespace cabapi.Migrations
                             Id = 1,
                             Estado = "Completada",
                             FechaCompra = new DateTime(2025, 7, 1, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Impuestos = 2800.00m,
                             NumeroCompra = "C-2025-001",
                             Observaciones = "Compra de componentes ESP32-CAM para producción mensual",
                             ProveedorId = 1,
@@ -223,7 +219,6 @@ namespace cabapi.Migrations
                             Id = 2,
                             Estado = "En Proceso",
                             FechaCompra = new DateTime(2025, 7, 5, 14, 30, 0, 0, DateTimeKind.Unspecified),
-                            Impuestos = 1360.00m,
                             NumeroCompra = "C-2025-002",
                             Observaciones = "Pedido de carcasas plásticas y accesorios",
                             ProveedorId = 2,
@@ -278,7 +273,7 @@ namespace cabapi.Migrations
                             Id = 2,
                             Cantidad = 100.00m,
                             CompraId = 2,
-                            MateriaPrimaId = 2,
+                            MateriaPrimaId = 5,
                             PrecioUnitario = 85.00m,
                             SubTotal = 8500.00m
                         });
@@ -318,9 +313,6 @@ namespace cabapi.Migrations
 
                     b.Property<DateTime?>("FechaVencimiento")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Impuestos")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("NombreCliente")
                         .IsRequired()
@@ -372,16 +364,15 @@ namespace cabapi.Migrations
                             EmpresaCliente = "Corporativo del Bajío SA",
                             Estado = "Pendiente",
                             FechaCotizacion = new DateTime(2025, 7, 20, 9, 15, 0, 0, DateTimeKind.Unspecified),
-                            Impuestos = 6240.00m,
                             NombreCliente = "María González",
                             NumeroCotizacion = "COT-2025-001",
                             Observaciones = "Cotización para implementación en 5 sucursales",
-                            PrecioUnitario = 7800.00m,
-                            ProductoId = 3,
+                            PrecioUnitario = 4200.00m,
+                            ProductoId = 2,
                             RequirimientosEspeciales = "Necesitan capacitación del personal y soporte técnico por 6 meses",
-                            SubTotal = 39000.00m,
+                            SubTotal = 21000.00m,
                             TelefonoCliente = "477-987-6543",
-                            Total = 45240.00m
+                            Total = 24360.00m
                         },
                         new
                         {
@@ -391,7 +382,6 @@ namespace cabapi.Migrations
                             EmpresaCliente = "Hotel Ejecutivo León",
                             Estado = "Aprobada",
                             FechaCotizacion = new DateTime(2025, 7, 22, 16, 20, 0, 0, DateTimeKind.Unspecified),
-                            Impuestos = 2016.00m,
                             NombreCliente = "Roberto Hernández",
                             NumeroCotizacion = "COT-2025-002",
                             Observaciones = "Instalación en lobby, restaurante y áreas comunes",
@@ -506,11 +496,11 @@ namespace cabapi.Migrations
                         {
                             Id = 1,
                             Activo = true,
-                            Descripcion = "Módulo microcontrolador con cámara integrada para IoT",
+                            Descripcion = "Módulo miniatura microcontrolador con cámara integrada para IoT",
                             FechaCreacion = new DateTime(2025, 6, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "ESP32-CAM",
                             PrecioUnitario = 350.00m,
-                            Stock = 50.00m,
+                            Stock = 5.00m,
                             StockMinimo = 10.00m,
                             UnidadMedida = "Pieza"
                         },
@@ -518,11 +508,11 @@ namespace cabapi.Migrations
                         {
                             Id = 2,
                             Activo = true,
-                            Descripcion = "Carcasa resistente para dispositivos IoT, material ABS",
+                            Descripcion = "Módulo microcontrolador con capacidades mejoradas para IoT",
                             FechaCreacion = new DateTime(2025, 6, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nombre = "Carcasa Plástica",
-                            PrecioUnitario = 85.00m,
-                            Stock = 100.00m,
+                            Nombre = "ESP32-S3",
+                            PrecioUnitario = 650.00m,
+                            Stock = 10.00m,
                             StockMinimo = 20.00m,
                             UnidadMedida = "Pieza"
                         },
@@ -530,9 +520,9 @@ namespace cabapi.Migrations
                         {
                             Id = 3,
                             Activo = true,
-                            Descripcion = "Adaptador de corriente 5V 2A para dispositivos",
+                            Descripcion = "Servo motor SG90 de 9g",
                             FechaCreacion = new DateTime(2025, 6, 3, 11, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nombre = "Fuente de Alimentación 5V",
+                            Nombre = "SG90",
                             PrecioUnitario = 120.00m,
                             Stock = 75.00m,
                             StockMinimo = 15.00m,
@@ -544,7 +534,7 @@ namespace cabapi.Migrations
                             Activo = true,
                             Descripcion = "Sensor de distancia ultrasónico HC-SR04",
                             FechaCreacion = new DateTime(2025, 6, 4, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nombre = "Sensor Ultrasónico",
+                            Nombre = "HC SR04",
                             PrecioUnitario = 45.00m,
                             Stock = 30.00m,
                             StockMinimo = 5.00m,
@@ -554,11 +544,11 @@ namespace cabapi.Migrations
                         {
                             Id = 5,
                             Activo = true,
-                            Descripcion = "Cable USB tipo C para programación y alimentación",
+                            Descripcion = "Carcasa plástica resistente para dispositivos IoT",
                             FechaCreacion = new DateTime(2025, 6, 5, 13, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nombre = "Cable USB",
-                            PrecioUnitario = 25.00m,
-                            Stock = 80.00m,
+                            Nombre = "Carcasa Plástica",
+                            PrecioUnitario = 85.00m,
+                            Stock = 100.00m,
                             StockMinimo = 20.00m,
                             UnidadMedida = "Pieza"
                         });
@@ -617,8 +607,8 @@ namespace cabapi.Migrations
                             Costo = 1200.00m,
                             Descripcion = "Sistema básico de clasificación automática de basura con ESP32-CAM. Incluye inteligencia artificial para identificar residuos orgánicos, valorizables y no valorizables.",
                             FechaCreacion = new DateTime(2025, 6, 15, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            Imagen = "/images/productos/cab-basico.jpg",
-                            Nombre = "CAB Clasificador Básico",
+                            Imagen = "/images/productos/cab-mini.jpg",
+                            Nombre = "CAB Clasificador Mini",
                             Precio = 2500.00m,
                             Stock = 25
                         },
@@ -629,22 +619,10 @@ namespace cabapi.Migrations
                             Costo = 2100.00m,
                             Descripcion = "Sistema avanzado con sensores adicionales, conectividad WiFi mejorada y dashboard en tiempo real. Perfecto para oficinas y centros educativos.",
                             FechaCreacion = new DateTime(2025, 6, 16, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Imagen = "/images/productos/cab-pro.jpg",
-                            Nombre = "CAB Clasificador Pro",
+                            Imagen = "/images/productos/cab-basico.jpg",
+                            Nombre = "CAB Clasificador",
                             Precio = 4200.00m,
                             Stock = 15
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Activo = true,
-                            Costo = 3900.00m,
-                            Descripcion = "Solución empresarial completa con múltiples sensores, análisis avanzado, reportes detallados y soporte técnico premium.",
-                            FechaCreacion = new DateTime(2025, 6, 17, 11, 0, 0, 0, DateTimeKind.Unspecified),
-                            Imagen = "/images/productos/cab-enterprise.jpg",
-                            Nombre = "CAB Clasificador Enterprise",
-                            Precio = 7800.00m,
-                            Stock = 8
                         });
                 });
 
@@ -690,7 +668,7 @@ namespace cabapi.Migrations
                         {
                             Id = 2,
                             CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 2,
+                            MateriaPrimaId = 4,
                             ProductoId = 1,
                             UnidadMedida = "Pieza"
                         },
@@ -698,7 +676,7 @@ namespace cabapi.Migrations
                         {
                             Id = 3,
                             CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 3,
+                            MateriaPrimaId = 5,
                             ProductoId = 1,
                             UnidadMedida = "Pieza"
                         },
@@ -706,15 +684,15 @@ namespace cabapi.Migrations
                         {
                             Id = 4,
                             CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 5,
-                            ProductoId = 1,
+                            MateriaPrimaId = 2,
+                            ProductoId = 2,
                             UnidadMedida = "Pieza"
                         },
                         new
                         {
                             Id = 5,
                             CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 1,
+                            MateriaPrimaId = 5,
                             ProductoId = 2,
                             UnidadMedida = "Pieza"
                         },
@@ -722,7 +700,7 @@ namespace cabapi.Migrations
                         {
                             Id = 6,
                             CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 2,
+                            MateriaPrimaId = 3,
                             ProductoId = 2,
                             UnidadMedida = "Pieza"
                         },
@@ -730,64 +708,8 @@ namespace cabapi.Migrations
                         {
                             Id = 7,
                             CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 3,
-                            ProductoId = 2,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CantidadRequerida = 1.00m,
                             MateriaPrimaId = 4,
                             ProductoId = 2,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 5,
-                            ProductoId = 2,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CantidadRequerida = 2.00m,
-                            MateriaPrimaId = 1,
-                            ProductoId = 3,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 2,
-                            ProductoId = 3,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CantidadRequerida = 1.00m,
-                            MateriaPrimaId = 3,
-                            ProductoId = 3,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CantidadRequerida = 2.00m,
-                            MateriaPrimaId = 4,
-                            ProductoId = 3,
-                            UnidadMedida = "Pieza"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CantidadRequerida = 2.00m,
-                            MateriaPrimaId = 5,
-                            ProductoId = 3,
                             UnidadMedida = "Pieza"
                         });
                 });
@@ -805,19 +727,9 @@ namespace cabapi.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Correo")
+                    b.Property<string>("Contacto")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Direccion")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -828,11 +740,6 @@ namespace cabapi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Proveedores");
@@ -842,34 +749,25 @@ namespace cabapi.Migrations
                         {
                             Id = 1,
                             Activo = true,
-                            Correo = "ventas@techcomponents.com",
-                            Direccion = "Av. Tecnológico 123, León, Guanajuato",
-                            FechaCreacion = new DateTime(2025, 6, 1, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Contacto = "ventas@techcomponents.com;477-123-4567;Av. Tecnológico 123, León, Guanajuato",
                             Nombre = "TechComponents SA de CV",
-                            Producto = "Componentes electrónicos",
-                            Telefono = "477-123-4567"
+                            Producto = "Componentes electrónicos"
                         },
                         new
                         {
                             Id = 2,
                             Activo = true,
-                            Correo = "contacto@plasticosmx.com",
-                            Direccion = "Blvd. Industrial 456, León, Guanajuato",
-                            FechaCreacion = new DateTime(2025, 6, 5, 11, 30, 0, 0, DateTimeKind.Unspecified),
+                            Contacto = "contacto@plasticosmx.com;477-234-5678;Blvd. Industrial 456, León, Guanajuato",
                             Nombre = "PlásticosMX",
-                            Producto = "Carcasas y estructuras plásticas",
-                            Telefono = "477-234-5678"
+                            Producto = "Carcasas y estructuras plásticas"
                         },
                         new
                         {
                             Id = 3,
                             Activo = true,
-                            Correo = "info@sensoresymas.com",
-                            Direccion = "Zona Industrial Norte 789, León, Guanajuato",
-                            FechaCreacion = new DateTime(2025, 6, 10, 8, 15, 0, 0, DateTimeKind.Unspecified),
+                            Contacto = "info@sensoresymas.com;477-345-6789;Zona Industrial Norte 789, León, Guanajuato",
                             Nombre = "Sensores y Más",
-                            Producto = "Sensores y cámaras",
-                            Telefono = "477-345-6789"
+                            Producto = "Sensores y cámaras"
                         });
                 });
 
@@ -956,12 +854,12 @@ namespace cabapi.Migrations
                         {
                             Id = 3,
                             Activo = true,
-                            Correo = "cliente@utleon.edu.mx",
+                            Correo = "alejandro@gmail.com",
                             EnLinea = false,
                             FechaCreacion = new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nombre = "Cliente Demo",
-                            Password = "CaMacAHiYaseBWGCpx089X9YLKminP9euDvg8FSXMKk=",
+                            Nombre = "Alejandro",
+                            Password = "F/4GrE2x2dga5lksv3QVL2rkuo+kjyF4kxQPQW//7lo=",
                             Rol = "cliente"
                         });
                 });
@@ -992,9 +890,6 @@ namespace cabapi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<decimal>("Impuestos")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("NumeroVenta")
                         .IsRequired()
@@ -1034,9 +929,8 @@ namespace cabapi.Migrations
                             Id = 1,
                             Cantidad = 2,
                             DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
-                            Estado = "Entregada",
+                            Estado = "entregada",
                             FechaVenta = new DateTime(2025, 7, 10, 15, 30, 0, 0, DateTimeKind.Unspecified),
-                            Impuestos = 800.00m,
                             NumeroVenta = "V-2025-001",
                             Observaciones = "Instalación en edificios A y B de la universidad",
                             PrecioUnitario = 2500.00m,
@@ -1050,9 +944,8 @@ namespace cabapi.Migrations
                             Id = 2,
                             Cantidad = 1,
                             DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
-                            Estado = "En Proceso",
+                            Estado = "en_proceso",
                             FechaVenta = new DateTime(2025, 7, 15, 11, 45, 0, 0, DateTimeKind.Unspecified),
-                            Impuestos = 672.00m,
                             NumeroVenta = "V-2025-002",
                             Observaciones = "Sistema para cafetería principal",
                             PrecioUnitario = 4200.00m,

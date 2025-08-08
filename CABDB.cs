@@ -51,10 +51,10 @@ public class CABDB : DbContext
                 },
                 new Usuario {
                     Id = 3,
-                    Nombre = "Cliente Demo",
-                    Correo = "cliente@utleon.edu.mx",
+                    Nombre = "Alejandro",
+                    Correo = "alejandro@gmail.com",
                     Rol = "cliente",
-                    Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("cliente123"))),
+                    Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("alejandro2025"))),
                     FechaCreacion = new DateTime(2025, 7, 6, 12, 0, 0),
                     FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0),
                     EnLinea = false,
@@ -114,7 +114,6 @@ public class CABDB : DbContext
                 new Deteccion { Id = 3, Tipo = "no_valorizable", FechaHora = new DateTime(2025, 7, 6, 12, 30, 0), ClasificadorId = 3 }
             };
 
-        // Datos de demostración para Comentarios
         List<Comentario> comentarios = new List<Comentario>
             {
                 new Comentario { 
@@ -143,7 +142,6 @@ public class CABDB : DbContext
                 }
             };
 
-        // Datos de demostración para Proveedores
         List<Proveedor> proveedores = new List<Proveedor>
             {
                 new Proveedor { 
@@ -151,25 +149,24 @@ public class CABDB : DbContext
                     Nombre = "TechComponents SA de CV", 
                     Contacto = new[] { "ventas@techcomponents.com", "477-123-4567", "Av. Tecnológico 123, León, Guanajuato" }, 
                     Producto = "Componentes electrónicos",
-                    Activo = true,
+                    Activo = true
                 },
                 new Proveedor { 
                     Id = 2, 
                     Nombre = "PlásticosMX", 
                     Contacto = new[] { "contacto@plasticosmx.com", "477-234-5678", "Blvd. Industrial 456, León, Guanajuato" }, 
                     Producto = "Carcasas y estructuras plásticas",
-                    Activo = true,
+                    Activo = true
                 },
                 new Proveedor { 
                     Id = 3, 
                     Nombre = "Sensores y Más", 
                     Contacto = new[] { "info@sensoresymas.com", "477-345-6789", "Zona Industrial Norte 789, León, Guanajuato" }, 
                     Producto = "Sensores y cámaras",
-                    Activo = true,
+                    Activo = true
                 }
             };
 
-        // Datos de demostración para Materias Primas
         List<MateriaPrima> materiasPrimas = new List<MateriaPrima>
             {
                 new MateriaPrima { 
@@ -216,71 +213,57 @@ public class CABDB : DbContext
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 4, 12, 0, 0)
                 },
+                new MateriaPrima { 
+                    Id = 5, 
+                    Nombre = "Carcasa Plástica", 
+                    Descripcion = "Carcasa plástica resistente para dispositivos IoT",
+                    PrecioUnitario = 85.00m,
+                    UnidadMedida = "Pieza",
+                    Stock = 100.00m,
+                    StockMinimo = 20.00m,
+                    Activo = true,
+                    FechaCreacion = new DateTime(2025, 6, 5, 13, 0, 0)
+                }
             };
 
-        // Datos de demostración para Productos
         List<Producto> productos = new List<Producto>
             {
                 new Producto { 
                     Id = 1, 
-                    Nombre = "CAB Clasificador Básico", 
+                    Nombre = "CAB Clasificador Mini", 
                     Descripcion = "Sistema básico de clasificación automática de basura con ESP32-CAM. Incluye inteligencia artificial para identificar residuos orgánicos, valorizables y no valorizables.",
                     Precio = 2500.00m,
                     Costo = 1200.00m,
                     Stock = 25,
-                    Imagen = "/images/productos/cab-basico.jpg",
+                    Imagen = "/images/productos/cab-mini.jpg",
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 15, 9, 0, 0)
                 },
                 new Producto { 
                     Id = 2, 
-                    Nombre = "CAB Clasificador Pro", 
+                    Nombre = "CAB Clasificador", 
                     Descripcion = "Sistema avanzado con sensores adicionales, conectividad WiFi mejorada y dashboard en tiempo real. Perfecto para oficinas y centros educativos.",
                     Precio = 4200.00m,
                     Costo = 2100.00m,
                     Stock = 15,
-                    Imagen = "/images/productos/cab-pro.jpg",
+                    Imagen = "/images/productos/cab-basico.jpg",
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 16, 10, 0, 0)
-                },
-                new Producto { 
-                    Id = 3, 
-                    Nombre = "CAB Clasificador Enterprise", 
-                    Descripcion = "Solución empresarial completa con múltiples sensores, análisis avanzado, reportes detallados y soporte técnico premium.",
-                    Precio = 7800.00m,
-                    Costo = 3900.00m,
-                    Stock = 8,
-                    Imagen = "/images/productos/cab-enterprise.jpg",
-                    Activo = true,
-                    FechaCreacion = new DateTime(2025, 6, 17, 11, 0, 0)
                 }
             };
 
-        // Datos de demostración para ProductoMateriaPrima (Explosión de materiales)
         List<ProductoMateriaPrima> productoMateriasPrimas = new List<ProductoMateriaPrima>
             {
-                // CAB Clasificador Básico
                 new ProductoMateriaPrima { Id = 1, ProductoId = 1, MateriaPrimaId = 1, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // ESP32-CAM
-                new ProductoMateriaPrima { Id = 2, ProductoId = 1, MateriaPrimaId = 2, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
-                new ProductoMateriaPrima { Id = 3, ProductoId = 1, MateriaPrimaId = 3, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Fuente
-                new ProductoMateriaPrima { Id = 4, ProductoId = 1, MateriaPrimaId = 5, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Cable USB
+                new ProductoMateriaPrima { Id = 2, ProductoId = 1, MateriaPrimaId = 4, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Sensor Ultrasónico
+                new ProductoMateriaPrima { Id = 3, ProductoId = 1, MateriaPrimaId = 5, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
                 
-                // CAB Clasificador Pro
-                new ProductoMateriaPrima { Id = 5, ProductoId = 2, MateriaPrimaId = 1, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // ESP32-CAM
-                new ProductoMateriaPrima { Id = 6, ProductoId = 2, MateriaPrimaId = 2, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
-                new ProductoMateriaPrima { Id = 7, ProductoId = 2, MateriaPrimaId = 3, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Fuente
-                new ProductoMateriaPrima { Id = 8, ProductoId = 2, MateriaPrimaId = 4, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Sensor Ultrasónico
-                new ProductoMateriaPrima { Id = 9, ProductoId = 2, MateriaPrimaId = 5, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Cable USB
-                
-                // CAB Clasificador Enterprise
-                new ProductoMateriaPrima { Id = 10, ProductoId = 3, MateriaPrimaId = 1, CantidadRequerida = 2.00m, UnidadMedida = "Pieza" }, // ESP32-CAM x2
-                new ProductoMateriaPrima { Id = 11, ProductoId = 3, MateriaPrimaId = 2, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
-                new ProductoMateriaPrima { Id = 12, ProductoId = 3, MateriaPrimaId = 3, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Fuente
-                new ProductoMateriaPrima { Id = 13, ProductoId = 3, MateriaPrimaId = 4, CantidadRequerida = 2.00m, UnidadMedida = "Pieza" }, // Sensor Ultrasónico x2
-                new ProductoMateriaPrima { Id = 14, ProductoId = 3, MateriaPrimaId = 5, CantidadRequerida = 2.00m, UnidadMedida = "Pieza" }  // Cable USB x2
+                new ProductoMateriaPrima { Id = 4, ProductoId = 2, MateriaPrimaId = 2, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // ESP32-S3
+                new ProductoMateriaPrima { Id = 5, ProductoId = 2, MateriaPrimaId = 5, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
+                new ProductoMateriaPrima { Id = 6, ProductoId = 2, MateriaPrimaId = 3, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Servo SG90
+                new ProductoMateriaPrima { Id = 7, ProductoId = 2, MateriaPrimaId = 4, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Sensor Ultrasónico
             };
 
-        // Datos de demostración para Compras
         List<Compra> compras = new List<Compra>
             {
                 new Compra { 
@@ -305,14 +288,12 @@ public class CABDB : DbContext
                 }
             };
 
-        // Datos de demostración para CompraDetalle
         List<CompraDetalle> compraDetalles = new List<CompraDetalle>
             {
                 new CompraDetalle { Id = 1, CompraId = 1, MateriaPrimaId = 1, Cantidad = 50.00m, PrecioUnitario = 350.00m, SubTotal = 17500.00m },
-                new CompraDetalle { Id = 2, CompraId = 2, MateriaPrimaId = 2, Cantidad = 100.00m, PrecioUnitario = 85.00m, SubTotal = 8500.00m }
+                new CompraDetalle { Id = 2, CompraId = 2, MateriaPrimaId = 5, Cantidad = 100.00m, PrecioUnitario = 85.00m, SubTotal = 8500.00m }
             };
 
-        // Datos de demostración para Ventas
         List<Venta> ventas = new List<Venta>
             {
                 new Venta { 
@@ -325,7 +306,7 @@ public class CABDB : DbContext
                     PrecioUnitario = 2500.00m,
                     SubTotal = 5000.00m,
                     Total = 5800.00m,
-                    Estado = "Entregada",
+                    Estado = "entregada",
                     DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
                     Observaciones = "Instalación en edificios A y B de la universidad"
                 },
@@ -339,13 +320,12 @@ public class CABDB : DbContext
                     PrecioUnitario = 4200.00m,
                     SubTotal = 4200.00m,
                     Total = 4872.00m,
-                    Estado = "En Proceso",
+                    Estado = "en_proceso",
                     DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
                     Observaciones = "Sistema para cafetería principal"
                 }
             };
 
-        // Datos de demostración para Cotizaciones
         List<Cotizacion> cotizaciones = new List<Cotizacion>
             {
                 new Cotizacion { 
@@ -356,11 +336,11 @@ public class CABDB : DbContext
                     CorreoCliente = "maria.gonzalez@empresa.com",
                     TelefonoCliente = "477-987-6543",
                     EmpresaCliente = "Corporativo del Bajío SA",
-                    ProductoId = 3,
+                    ProductoId = 2,
                     Cantidad = 5,
-                    PrecioUnitario = 7800.00m,
-                    SubTotal = 39000.00m,
-                    Total = 45240.00m,
+                    PrecioUnitario = 4200.00m,
+                    SubTotal = 21000.00m,
+                    Total = 24360.00m,
                     Estado = "Pendiente",
                     Observaciones = "Cotización para implementación en 5 sucursales",
                     RequirimientosEspeciales = "Necesitan capacitación del personal y soporte técnico por 6 meses"
@@ -432,7 +412,6 @@ public class CABDB : DbContext
             zona.HasData(zonas);
         });
 
-        // Configuración de Comentario
         modelBuilder.Entity<Comentario>(comentario =>
         {
             comentario.HasKey(c => c.Id);
@@ -445,18 +424,20 @@ public class CABDB : DbContext
             comentario.HasData(comentarios);
         });
 
-        // Configuración de Proveedor
         modelBuilder.Entity<Proveedor>(proveedor =>
         {
             proveedor.HasKey(p => p.Id);
             proveedor.Property(p => p.Nombre).IsRequired().HasMaxLength(100);
-            proveedor.Property(p => p.Contacto).HasColumnType("nvarchar(500)"); // Almacena múltiples contactos como JSON
+            proveedor.Property(p => p.Contacto)
+                .HasConversion(
+                    v => string.Join(';', v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                .HasColumnType("nvarchar(500)");
             proveedor.Property(p => p.Producto).HasMaxLength(100);
             proveedor.Property(p => p.Activo).HasDefaultValue(true);
             proveedor.HasData(proveedores);
         });
 
-        // Configuración de MateriaPrima
         modelBuilder.Entity<MateriaPrima>(materia =>
         {
             materia.HasKey(m => m.Id);
@@ -471,7 +452,6 @@ public class CABDB : DbContext
             materia.HasData(materiasPrimas);
         });
 
-        // Configuración de Producto
         modelBuilder.Entity<Producto>(producto =>
         {
             producto.HasKey(p => p.Id);
@@ -485,7 +465,6 @@ public class CABDB : DbContext
             producto.HasData(productos);
         });
 
-        // Configuración de ProductoMateriaPrima
         modelBuilder.Entity<ProductoMateriaPrima>(pmp =>
         {
             pmp.HasKey(p => p.Id);
@@ -500,7 +479,6 @@ public class CABDB : DbContext
             pmp.HasData(productoMateriasPrimas);
         });
 
-        // Configuración de Compra
         modelBuilder.Entity<Compra>(compra =>
         {
             compra.HasKey(c => c.Id);
@@ -516,7 +494,6 @@ public class CABDB : DbContext
             compra.HasData(compras);
         });
 
-        // Configuración de CompraDetalle
         modelBuilder.Entity<CompraDetalle>(detalle =>
         {
             detalle.HasKey(d => d.Id);
@@ -532,7 +509,6 @@ public class CABDB : DbContext
             detalle.HasData(compraDetalles);
         });
 
-        // Configuración de Venta
         modelBuilder.Entity<Venta>(venta =>
         {
             venta.HasKey(v => v.Id);
@@ -553,7 +529,6 @@ public class CABDB : DbContext
             venta.HasData(ventas);
         });
 
-        // Configuración de Cotizacion
         modelBuilder.Entity<Cotizacion>(cotizacion =>
         {
             cotizacion.HasKey(c => c.Id);

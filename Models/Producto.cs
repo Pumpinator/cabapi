@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace cabapi.Models
-{
-    public class Producto
-    {
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string Nombre { get; set; } = string.Empty;
-
-        [Range(0, int.MaxValue)]
-        public int Cantidad { get; set; }
-    }
-=======
 using System.Text.Json.Serialization;
 
 namespace cabapi.Models;
@@ -44,5 +27,4 @@ public class Producto
 
     [JsonIgnore]
     public virtual ICollection<Venta> Ventas { get; set; } = new List<Venta>();
->>>>>>> ce01e5a (modelos incompletos)
 }
