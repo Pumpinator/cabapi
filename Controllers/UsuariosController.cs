@@ -35,6 +35,11 @@ public class UsuariosController : ControllerBase
 
         var token = GenerateToken(usuario);
 
+        usuario.FechaUltimoAcceso = DateTime.Now;
+        usuario.EnLinea = true;
+
+        await _db.SaveChangesAsync();
+
         return Ok(new
         {
             token,
@@ -46,6 +51,30 @@ public class UsuariosController : ControllerBase
                 rol = usuario.Rol.ToString()
             }
         });
+    }
+
+    [HttpPost("salir")]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+        {
+            return BadRequest(new { message = "Token inválido" });
+        }
+
+        var usuario = await _db.Usuarios.FindAsync(userId);
+        if (usuario == null)
+        {
+            return NotFound(new { message = "Usuario no encontrado" });
+        }
+
+        usuario.EnLinea = false;
+        usuario.FechaUltimoAcceso = DateTime.Now;
+
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Sesión cerrada correctamente" });
     }
 
     [HttpGet]
@@ -142,11 +171,6 @@ public class UsuariosController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Usuario>> Register([FromBody] RegistroDTO request)
     {
-        if (request.Rol != Rol.Cliente)
-        {
-            return BadRequest(new { message = "Este registro solo permite crear usuarios con rol 'Cliente'" });
-        }
-
         if (await _db.Usuarios.AnyAsync(u => u.Correo == request.Correo))
         {
             return BadRequest(new { message = "El correo ya está registrado" });
@@ -157,13 +181,12 @@ public class UsuariosController : ControllerBase
             Nombre = request.Nombre,
             Correo = request.Correo,
             Password = HashPassword(request.Password),
-            Rol = Rol.Cliente // Forzar rol de cliente en registro público
+            Rol = Rol.Cliente
         };
 
         _db.Usuarios.Add(usuario);
         await _db.SaveChangesAsync();
 
-        // No devolver la contraseña en la respuesta
         usuario.Password = "";
         return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
     }
@@ -282,7 +305,7 @@ public class UsuariosController : ControllerBase
 
         usuario.Nombre = request.Nombre;
         usuario.Correo = request.Correo;
-        
+
         // Solo actualizar el rol si el usuario tiene permisos
         if (currentUserRole == Rol.SuperAdmin || (currentUserRole == Rol.Admin && request.Rol != Rol.SuperAdmin))
         {
@@ -347,35 +370,6 @@ public class UsuariosController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("cambiar-password")]
-    [Authorize]
-    public async Task<ActionResult> ChangePassword([FromBody] CambiarPasswordDTO request)
-    {
-        var currentUserId = GetCurrentUserId();
-        if (currentUserId == 0)
-        {
-            return BadRequest(new { message = "Token inválido" });
-        }
-
-        var usuario = await _db.Usuarios.FindAsync(currentUserId);
-        if (usuario == null || !usuario.Activo)
-        {
-            return NotFound(new { message = "Usuario no encontrado" });
-        }
-
-        // Verificar contraseña actual
-        if (!VerifyPassword(request.PasswordActual, usuario.Password))
-        {
-            return BadRequest(new { message = "La contraseña actual es incorrecta" });
-        }
-
-        // Actualizar contraseña
-        usuario.Password = HashPassword(request.PasswordNueva);
-        await _db.SaveChangesAsync();
-
-        return Ok(new { message = "Contraseña actualizada exitosamente" });
-    }
-
     private string GenerateToken(Usuario usuario)
     {
         var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
@@ -383,7 +377,7 @@ public class UsuariosController : ControllerBase
         {
             throw new InvalidOperationException("JWT_SECRET_KEY no está configurado");
         }
-        
+
         var key = Encoding.ASCII.GetBytes(secretKey);
 
         var claims = new[]
