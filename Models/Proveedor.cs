@@ -10,10 +10,6 @@ public class Proveedor
 
     public required string[] Contacto { get; set; }
 
-    public string? Producto { get; set; } // Producto principal que ofrece
-
     public bool Activo { get; set; } = true;
 
-    [JsonIgnore]
-    public virtual ICollection<Compra> Compras { get; set; } = new List<Compra>();
 }

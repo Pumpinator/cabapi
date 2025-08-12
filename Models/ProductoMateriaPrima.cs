@@ -10,7 +10,7 @@ public class ProductoMateriaPrima
 
     public int MateriaPrimaId { get; set; }
 
-    public decimal CantidadRequerida { get; set; }
+    public int Cantidad { get; set; }
 
     [JsonIgnore]
     public virtual Producto Producto { get; set; } = null!;

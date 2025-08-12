@@ -86,8 +86,22 @@ namespace cabapi.Controllers
                 return NotFound();
             }
 
+            bool tieneRelacion = await _context.CompraDetalles.AnyAsync(cd => cd.MateriaPrimaId == id);
+            if (tieneRelacion)
+            {
+                return Conflict(new { message = "La materia prima está asociada a uno o más registros de compra (detalle) y no puede eliminarse." });
+            }
+
             _context.MateriasPrimas.Remove(materiaPrima);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Manejo adicional por si existe otra restricción de integridad
+                return Conflict(new { message = "No se pudo eliminar la materia prima por restricciones de integridad.", detail = ex.Message });
+            }
 
             return NoContent();
         }

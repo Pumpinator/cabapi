@@ -10,9 +10,7 @@ public class MateriaPrima
 
     public required string Descripcion { get; set; }
 
-    public required decimal PrecioUnitario { get; set; }
-
-    public decimal Stock { get; set; } = 0;
+    public int Stock { get; set; } = 0;
 
     public bool Activo { get; set; } = true;
 
