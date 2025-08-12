@@ -85,8 +85,14 @@ namespace cabapi.Controllers
                 FechaHora = DateTime.Now,
                 UsuarioId = dto.UsuarioId,
                 Calificacion = dto.Calificacion,
-                Activo = dto.Activo
+                Activo = dto.Activo,
+                ProductoId= dto.ProductoID
             };
+            var existeProducto = _context.Productos.Any(p => p.Id == comentario.ProductoId);
+            if (!existeProducto)
+            {
+                return BadRequest("El producto no existe");
+            }
 
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
