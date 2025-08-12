@@ -252,7 +252,7 @@ namespace cabapi.Controllers
             }
 
             // Verificar si el producto tiene relaciones que impidan su eliminación
-            var tieneVentas = await _context.Ventas.AnyAsync(v => v.ProductoId == producto.Id);
+            var tieneVentas = await _context.VentaDetalles.AnyAsync(v => v.ProductoId == producto.Id);
             if (tieneVentas)
             {
                 return BadRequest(new { message = "No se puede eliminar el producto porque tiene ventas asociadas" });
@@ -297,7 +297,7 @@ namespace cabapi.Controllers
                     break;
                 case "delete":
                     // Verificar si algún producto tiene ventas
-                    var productosConVentas = await _context.Ventas
+                    var productosConVentas = await _context.VentaDetalles
                         .Where(v => bulkDto.ProductoIds.Contains(v.ProductoId))
                         .Select(v => v.ProductoId)
                         .Distinct()

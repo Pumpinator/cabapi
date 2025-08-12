@@ -21,7 +21,6 @@ namespace cabapi.Controllers
         {
             return await _context.Ventas
                 .Include(v => v.Usuario)
-                .Include(v => v.Producto)
                 .ToListAsync();
         }
 
@@ -31,7 +30,6 @@ namespace cabapi.Controllers
         {
             var venta = await _context.Ventas
                 .Include(v => v.Usuario)
-                .Include(v => v.Producto)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             if (venta == null)

@@ -12,8 +12,6 @@ public class Venta
 
     public int UsuarioId { get; set; }
 
-    public int ProductoId { get; set; }
-
     public int Cantidad { get; set; }
 
     public decimal PrecioUnitario { get; set; }
@@ -32,5 +30,6 @@ public class Venta
     public virtual Usuario Usuario { get; set; } = null!;
 
     [JsonIgnore]
-    public virtual Producto Producto { get; set; } = null!;
+    public virtual ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
+
 }
