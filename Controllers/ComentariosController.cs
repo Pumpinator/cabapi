@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cabapi.Models;
+using cabapi.DTOs;
 
 namespace cabapi.Controllers
 {
@@ -36,6 +37,15 @@ namespace cabapi.Controllers
             return comentario;
         }
 
+        [HttpGet("producto/{productoId}")]
+        public async Task<ActionResult<IEnumerable<Comentario>>> GetComentariosByProducto(int productoId)
+        {
+            return await _context.Comentarios
+                .Where(c => c.ProductoId == productoId && c.Activo)
+                .Include(c => c.Usuario)
+                .ToListAsync();
+        }
+
         // PUT: api/comentarios/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComentario(int id, Comentario comentario)
@@ -66,10 +76,18 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-        // POST: api/comentarios
         [HttpPost]
-        public async Task<ActionResult<Comentario>> PostComentario(Comentario comentario)
+        public async Task<ActionResult<Comentario>> PostComentario(ComentarioDTO dto)
         {
+            var comentario = new Comentario
+            {
+                Texto = dto.Texto,
+                FechaHora = DateTime.Now,
+                UsuarioId = dto.UsuarioId,
+                Calificacion = dto.Calificacion,
+                Activo = dto.Activo
+            };
+
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
 

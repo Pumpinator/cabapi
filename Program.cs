@@ -56,6 +56,7 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
+
 });
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

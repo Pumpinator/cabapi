@@ -16,6 +16,11 @@ public class Comentario
 
     public bool Activo { get; set; } = true;
 
+    public int ProductoId { get; set; }
+
     [JsonIgnore]
     public virtual Usuario Usuario { get; set; } = null!;
-};
+
+    [JsonIgnore]
+    public virtual Producto? Producto { get; set; } = null;
+}

@@ -27,4 +27,7 @@ public class Producto
 
     [JsonIgnore]
     public virtual ICollection<Venta> Ventas { get; set; } = new List<Venta>();
+
+    [JsonIgnore]
+    public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
 }
