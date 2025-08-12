@@ -122,7 +122,8 @@ public class CABDB : DbContext
                     FechaHora = new DateTime(2025, 7, 10, 10, 30, 0),
                     UsuarioId = 3,
                     Calificacion = 5,
-                    Activo = true
+                    Activo = true,
+                    ProductoId = 2
                 },
                 new Comentario {
                     Id = 2,
@@ -130,7 +131,8 @@ public class CABDB : DbContext
                     FechaHora = new DateTime(2025, 7, 15, 14, 20, 0),
                     UsuarioId = 3,
                     Calificacion = 5,
-                    Activo = true
+                    Activo = true,
+                    ProductoId = 1
                 },
                 new Comentario {
                     Id = 3,
@@ -138,7 +140,8 @@ public class CABDB : DbContext
                     FechaHora = new DateTime(2025, 7, 20, 16, 45, 0),
                     UsuarioId = 3,
                     Calificacion = 4,
-                    Activo = true
+                    Activo = true,
+                    ProductoId = 1
                 }
             };
 
@@ -418,6 +421,9 @@ public class CABDB : DbContext
             comentario.HasOne(c => c.Usuario)
                 .WithMany(u => u.Comentarios)
                 .HasForeignKey(c => c.UsuarioId);
+            comentario.HasOne(c => c.Producto).
+                WithMany(p => p.Comentarios).
+                HasForeignKey(c => c.ProductoId);
             comentario.HasData(comentarios);
         });
 

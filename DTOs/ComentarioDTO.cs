@@ -11,6 +11,7 @@ namespace cabapi.DTOs
         public DateTime FechaHora { get; set; } = DateTime.Now;
 
         public int UsuarioId { get; set; }
+        public int ProductoID { get; set; }
 
         public int? Calificacion { get; set; }
 

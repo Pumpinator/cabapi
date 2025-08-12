@@ -37,6 +37,15 @@ namespace cabapi.Controllers
             return comentario;
         }
 
+        [HttpGet("producto/{productoId}")]
+        public async Task<ActionResult<IEnumerable<Comentario>>> GetComentariosByProducto(int productoId)
+        {
+            return await _context.Comentarios
+                .Where(c => c.ProductoId == productoId && c.Activo)
+                .Include(c => c.Usuario)
+                .ToListAsync();
+        }
+
         // PUT: api/comentarios/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComentario(int id, Comentario comentario)
@@ -67,10 +76,6 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-<<<<<<< HEAD
-=======
-        // POST: api/comentarios
->>>>>>> 4f56c175b6030ed6974644ee3d75257d6fca10a4
         [HttpPost]
         public async Task<ActionResult<Comentario>> PostComentario(ComentarioDTO dto)
         {

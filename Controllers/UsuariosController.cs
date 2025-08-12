@@ -53,18 +53,6 @@ public class UsuariosController : ControllerBase
         });
     }
 
-<<<<<<< HEAD
-    [HttpGet("{id}")]
-    [Authorize]
-    public async Task<ActionResult<Usuario>> GetUsuario(int id)
-    {
-        var usuario = await _db.Usuarios.FindAsync(id);
-        if (usuario == null)
-        {
-            return NotFound();
-        }
-        return usuario;
-=======
     [HttpPost("salir")]
     [Authorize]
     public async Task<IActionResult> Logout()
@@ -87,7 +75,6 @@ public class UsuariosController : ControllerBase
         await _db.SaveChangesAsync();
 
         return Ok(new { message = "Sesión cerrada correctamente" });
->>>>>>> 4f56c175b6030ed6974644ee3d75257d6fca10a4
     }
 
     [HttpGet]
@@ -116,9 +103,6 @@ public class UsuariosController : ControllerBase
         return Ok(usuarios);
     }
 
-<<<<<<< HEAD
-   
-=======
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<Usuario>> GetById(int id)
@@ -150,7 +134,6 @@ public class UsuariosController : ControllerBase
 
         return Ok(usuario);
     }
->>>>>>> 4f56c175b6030ed6974644ee3d75257d6fca10a4
 
 
     [HttpGet("perfil")]
@@ -204,9 +187,6 @@ public class UsuariosController : ControllerBase
         _db.Usuarios.Add(usuario);
         await _db.SaveChangesAsync();
 
-<<<<<<< HEAD
-        return CreatedAtAction(nameof(GetUsuario), new { id = usuario.Id }, usuario);
-=======
         usuario.Password = "";
         return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
     }
@@ -279,7 +259,6 @@ public class UsuariosController : ControllerBase
         // No devolver la contraseña en la respuesta
         usuario.Password = "";
         return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
->>>>>>> 4f56c175b6030ed6974644ee3d75257d6fca10a4
     }
 
     [HttpPut("{id}")]

@@ -114,6 +114,9 @@ namespace cabapi.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Texto")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -123,6 +126,8 @@ namespace cabapi.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductoId");
 
                     b.HasIndex("UsuarioId");
 
@@ -135,6 +140,7 @@ namespace cabapi.Migrations
                             Activo = true,
                             Calificacion = 5,
                             FechaHora = new DateTime(2025, 7, 10, 10, 30, 0, 0, DateTimeKind.Unspecified),
+                            ProductoId = 2,
                             Texto = "Excelente sistema de clasificación automática. Muy útil para nuestro centro de trabajo.",
                             UsuarioId = 3
                         },
@@ -144,6 +150,7 @@ namespace cabapi.Migrations
                             Activo = true,
                             Calificacion = 5,
                             FechaHora = new DateTime(2025, 7, 15, 14, 20, 0, 0, DateTimeKind.Unspecified),
+                            ProductoId = 1,
                             Texto = "La precisión del clasificador es impresionante. Recomiendo totalmente este producto.",
                             UsuarioId = 3
                         },
@@ -153,6 +160,7 @@ namespace cabapi.Migrations
                             Activo = true,
                             Calificacion = 4,
                             FechaHora = new DateTime(2025, 7, 20, 16, 45, 0, 0, DateTimeKind.Unspecified),
+                            ProductoId = 1,
                             Texto = "Fácil instalación y excelentes resultados. El soporte técnico es muy bueno.",
                             UsuarioId = 3
                         });
@@ -1024,11 +1032,19 @@ namespace cabapi.Migrations
 
             modelBuilder.Entity("cabapi.Models.Comentario", b =>
                 {
+                    b.HasOne("cabapi.Models.Producto", "Producto")
+                        .WithMany("Comentarios")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("cabapi.Models.Usuario", "Usuario")
                         .WithMany("Comentarios")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Producto");
 
                     b.Navigation("Usuario");
                 });
@@ -1142,6 +1158,8 @@ namespace cabapi.Migrations
 
             modelBuilder.Entity("cabapi.Models.Producto", b =>
                 {
+                    b.Navigation("Comentarios");
+
                     b.Navigation("ProductoMateriasPrimas");
 
                     b.Navigation("Ventas");
