@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cabapi;
 using cabapi.Models;
+using cabapi.DTOs;
 
 namespace cabapi.Controllers
 {
@@ -72,10 +72,18 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-        // POST: api/Comentarios
         [HttpPost]
-        public async Task<ActionResult<Comentario>> PostComentario(Comentario comentario)
+        public async Task<ActionResult<Comentario>> PostComentario(ComentarioDTO dto)
         {
+            var comentario = new Comentario
+            {
+                Texto = dto.Texto,
+                FechaHora = DateTime.Now,
+                UsuarioId = dto.UsuarioId,
+                Calificacion = dto.Calificacion,
+                Activo = dto.Activo
+            };
+
             _context.Comentarios.Add(comentario);
             await _context.SaveChangesAsync();
 

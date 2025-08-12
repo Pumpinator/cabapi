@@ -47,7 +47,7 @@ public class UsuariosController : ControllerBase
         });
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<Usuario>> GetUsuario(int id)
     {
@@ -68,19 +68,7 @@ public class UsuariosController : ControllerBase
             .ToListAsync());
     }
 
-    [HttpGet("{id}")]
-    [Authorize]
-    public async Task<ActionResult<Usuario>> GetById(int id)
-    {
-        var usuario = await _db.Usuarios.FindAsync(id);
-
-        if (usuario == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(usuario);
-    }
+   
 
 
     [HttpGet("perfil")]
@@ -121,7 +109,7 @@ public class UsuariosController : ControllerBase
         _db.Usuarios.Add(usuario);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
+        return CreatedAtAction(nameof(GetUsuario), new { id = usuario.Id }, usuario);
     }
 
     [HttpPut("{id}")]
