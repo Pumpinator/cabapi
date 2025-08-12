@@ -22,7 +22,7 @@ public class Venta
 
     public decimal Total { get; set; }
 
-    public string Estado { get; set; } = "Pendiente"; // Pendiente, Pagada, Enviada, Entregada, Cancelada
+    public Estatus Estatus { get; set; } = Estatus.Pendiente; // Pendiente, Pagada, Enviada, Entregada, Cancelada
 
     public string? DireccionEnvio { get; set; }
 

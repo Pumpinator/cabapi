@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using cabapi.Models;
 using cabapi.DTOs;
 
 namespace cabapi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/comentarios")]
     [ApiController]
     public class ComentariosController : ControllerBase
     {
@@ -21,14 +16,14 @@ namespace cabapi.Controllers
             _context = context;
         }
 
-        // GET: api/Comentarios
+        // GET: api/comentarios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comentario>>> GetComentarios()
         {
             return await _context.Comentarios.ToListAsync();
         }
 
-        // GET: api/Comentarios/5
+        // GET: api/comentarios/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Comentario>> GetComentario(int id)
         {
@@ -42,7 +37,7 @@ namespace cabapi.Controllers
             return comentario;
         }
 
-        // PUT: api/Comentarios/5
+        // PUT: api/comentarios/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComentario(int id, Comentario comentario)
         {
@@ -72,6 +67,10 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
+<<<<<<< HEAD
+=======
+        // POST: api/comentarios
+>>>>>>> 4f56c175b6030ed6974644ee3d75257d6fca10a4
         [HttpPost]
         public async Task<ActionResult<Comentario>> PostComentario(ComentarioDTO dto)
         {
@@ -90,7 +89,7 @@ namespace cabapi.Controllers
             return CreatedAtAction("GetComentario", new { id = comentario.Id }, comentario);
         }
 
-        // DELETE: api/Comentarios/5
+        // DELETE: api/comentarios/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComentario(int id)
         {

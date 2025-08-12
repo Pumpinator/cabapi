@@ -31,7 +31,7 @@ public class CABDB : DbContext
                     Id = 1,
                     Nombre = "Super Administrador",
                     Correo = "superadmin@utleon.edu.mx",
-                    Rol = "superadmin",
+                    Rol = Rol.SuperAdmin,
                     Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("password123"))),
                     FechaCreacion = new DateTime(2025, 7, 6, 12, 0, 0),
                     FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0),
@@ -42,7 +42,7 @@ public class CABDB : DbContext
                     Id = 2,
                     Nombre = "Administrador",
                     Correo = "admin@utleon.edu.mx",
-                    Rol = "admin",
+                    Rol = Rol.Admin,
                     Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("admin123"))),
                     FechaCreacion = new DateTime(2025, 7, 6, 12, 0, 0),
                     FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0),
@@ -53,7 +53,7 @@ public class CABDB : DbContext
                     Id = 3,
                     Nombre = "Alejandro",
                     Correo = "alejandro@gmail.com",
-                    Rol = "cliente",
+                    Rol = Rol.Cliente,
                     Password = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes("alejandro2025"))),
                     FechaCreacion = new DateTime(2025, 7, 6, 12, 0, 0),
                     FechaUltimoAcceso = new DateTime(2025, 7, 6, 12, 0, 0),
@@ -109,59 +109,59 @@ public class CABDB : DbContext
 
         List<Deteccion> detecciones = new List<Deteccion>
             {
-                new Deteccion { Id = 1, Tipo = "organico", FechaHora = new DateTime(2025, 7, 6, 12, 0, 0), ClasificadorId = 1 },
-                new Deteccion { Id = 2, Tipo = "valorizable", FechaHora = new DateTime(2025, 7, 6, 12, 15, 0), ClasificadorId = 2 },
-                new Deteccion { Id = 3, Tipo = "no_valorizable", FechaHora = new DateTime(2025, 7, 6, 12, 30, 0), ClasificadorId = 3 }
+                new Deteccion { Id = 1, Tipo = Tipo.Organico, FechaHora = new DateTime(2025, 7, 6, 12, 0, 0), ClasificadorId = 1 },
+                new Deteccion { Id = 2, Tipo = Tipo.Valorizable, FechaHora = new DateTime(2025, 7, 6, 12, 15, 0), ClasificadorId = 2 },
+                new Deteccion { Id = 3, Tipo = Tipo.NoValorizable, FechaHora = new DateTime(2025, 7, 6, 12, 30, 0), ClasificadorId = 3 }
             };
 
         List<Comentario> comentarios = new List<Comentario>
             {
-                new Comentario { 
-                    Id = 1, 
-                    Texto = "Excelente sistema de clasificación automática. Muy útil para nuestro centro de trabajo.", 
-                    FechaHora = new DateTime(2025, 7, 10, 10, 30, 0), 
-                    UsuarioId = 3, 
+                new Comentario {
+                    Id = 1,
+                    Texto = "Excelente sistema de clasificación automática. Muy útil para nuestro centro de trabajo.",
+                    FechaHora = new DateTime(2025, 7, 10, 10, 30, 0),
+                    UsuarioId = 3,
                     Calificacion = 5,
-                    Activo = true 
+                    Activo = true
                 },
-                new Comentario { 
-                    Id = 2, 
-                    Texto = "La precisión del clasificador es impresionante. Recomiendo totalmente este producto.", 
-                    FechaHora = new DateTime(2025, 7, 15, 14, 20, 0), 
-                    UsuarioId = 3, 
+                new Comentario {
+                    Id = 2,
+                    Texto = "La precisión del clasificador es impresionante. Recomiendo totalmente este producto.",
+                    FechaHora = new DateTime(2025, 7, 15, 14, 20, 0),
+                    UsuarioId = 3,
                     Calificacion = 5,
-                    Activo = true 
+                    Activo = true
                 },
-                new Comentario { 
-                    Id = 3, 
-                    Texto = "Fácil instalación y excelentes resultados. El soporte técnico es muy bueno.", 
-                    FechaHora = new DateTime(2025, 7, 20, 16, 45, 0), 
-                    UsuarioId = 3, 
+                new Comentario {
+                    Id = 3,
+                    Texto = "Fácil instalación y excelentes resultados. El soporte técnico es muy bueno.",
+                    FechaHora = new DateTime(2025, 7, 20, 16, 45, 0),
+                    UsuarioId = 3,
                     Calificacion = 4,
-                    Activo = true 
+                    Activo = true
                 }
             };
 
         List<Proveedor> proveedores = new List<Proveedor>
             {
-                new Proveedor { 
-                    Id = 1, 
-                    Nombre = "TechComponents SA de CV", 
-                    Contacto = new[] { "ventas@techcomponents.com", "477-123-4567", "Av. Tecnológico 123, León, Guanajuato" }, 
+                new Proveedor {
+                    Id = 1,
+                    Nombre = "TechComponents SA de CV",
+                    Contacto = new[] { "ventas@techcomponents.com", "477-123-4567", "Av. Tecnológico 123, León, Guanajuato" },
                     Producto = "Componentes electrónicos",
                     Activo = true
                 },
-                new Proveedor { 
-                    Id = 2, 
-                    Nombre = "PlásticosMX", 
-                    Contacto = new[] { "contacto@plasticosmx.com", "477-234-5678", "Blvd. Industrial 456, León, Guanajuato" }, 
+                new Proveedor {
+                    Id = 2,
+                    Nombre = "PlásticosMX",
+                    Contacto = new[] { "contacto@plasticosmx.com", "477-234-5678", "Blvd. Industrial 456, León, Guanajuato" },
                     Producto = "Carcasas y estructuras plásticas",
                     Activo = true
                 },
-                new Proveedor { 
-                    Id = 3, 
-                    Nombre = "Sensores y Más", 
-                    Contacto = new[] { "info@sensoresymas.com", "477-345-6789", "Zona Industrial Norte 789, León, Guanajuato" }, 
+                new Proveedor {
+                    Id = 3,
+                    Nombre = "Sensores y Más",
+                    Contacto = new[] { "info@sensoresymas.com", "477-345-6789", "Zona Industrial Norte 789, León, Guanajuato" },
                     Producto = "Sensores y cámaras",
                     Activo = true
                 }
@@ -169,58 +169,48 @@ public class CABDB : DbContext
 
         List<MateriaPrima> materiasPrimas = new List<MateriaPrima>
             {
-                new MateriaPrima { 
-                    Id = 1, 
-                    Nombre = "ESP32-CAM", 
+                new MateriaPrima {
+                    Id = 1,
+                    Nombre = "ESP32-CAM",
                     Descripcion = "Módulo miniatura microcontrolador con cámara integrada para IoT",
                     PrecioUnitario = 350.00m,
-                    UnidadMedida = "Pieza",
                     Stock = 5.00m,
-                    StockMinimo = 10.00m,
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 1, 9, 0, 0)
                 },
-                new MateriaPrima { 
-                    Id = 2, 
-                    Nombre = "ESP32-S3", 
+                new MateriaPrima {
+                    Id = 2,
+                    Nombre = "ESP32-S3",
                     Descripcion = "Módulo microcontrolador con capacidades mejoradas para IoT",
                     PrecioUnitario = 650.00m,
-                    UnidadMedida = "Pieza",
                     Stock = 10.00m,
-                    StockMinimo = 20.00m,
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 2, 10, 0, 0)
                 },
-                new MateriaPrima { 
-                    Id = 3, 
-                    Nombre = "SG90", 
+                new MateriaPrima {
+                    Id = 3,
+                    Nombre = "SG90",
                     Descripcion = "Servo motor SG90 de 9g",
                     PrecioUnitario = 120.00m,
-                    UnidadMedida = "Pieza",
                     Stock = 75.00m,
-                    StockMinimo = 15.00m,
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 3, 11, 0, 0)
                 },
-                new MateriaPrima { 
-                    Id = 4, 
-                    Nombre = "HC SR04", 
+                new MateriaPrima {
+                    Id = 4,
+                    Nombre = "HC SR04",
                     Descripcion = "Sensor de distancia ultrasónico HC-SR04",
                     PrecioUnitario = 45.00m,
-                    UnidadMedida = "Pieza",
                     Stock = 30.00m,
-                    StockMinimo = 5.00m,
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 4, 12, 0, 0)
                 },
-                new MateriaPrima { 
-                    Id = 5, 
-                    Nombre = "Carcasa Plástica", 
+                new MateriaPrima {
+                    Id = 5,
+                    Nombre = "Carcasa Plástica",
                     Descripcion = "Carcasa plástica resistente para dispositivos IoT",
                     PrecioUnitario = 85.00m,
-                    UnidadMedida = "Pieza",
                     Stock = 100.00m,
-                    StockMinimo = 20.00m,
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 5, 13, 0, 0)
                 }
@@ -228,9 +218,9 @@ public class CABDB : DbContext
 
         List<Producto> productos = new List<Producto>
             {
-                new Producto { 
-                    Id = 1, 
-                    Nombre = "CAB Clasificador Mini", 
+                new Producto {
+                    Id = 1,
+                    Nombre = "CAB Clasificador Mini",
                     Descripcion = "Sistema básico de clasificación automática de basura con ESP32-CAM. Incluye inteligencia artificial para identificar residuos orgánicos, valorizables y no valorizables.",
                     Precio = 2500.00m,
                     Costo = 1200.00m,
@@ -239,9 +229,9 @@ public class CABDB : DbContext
                     Activo = true,
                     FechaCreacion = new DateTime(2025, 6, 15, 9, 0, 0)
                 },
-                new Producto { 
-                    Id = 2, 
-                    Nombre = "CAB Clasificador", 
+                new Producto {
+                    Id = 2,
+                    Nombre = "CAB Clasificador",
                     Descripcion = "Sistema avanzado con sensores adicionales, conectividad WiFi mejorada y dashboard en tiempo real. Perfecto para oficinas y centros educativos.",
                     Precio = 4200.00m,
                     Costo = 2100.00m,
@@ -254,36 +244,36 @@ public class CABDB : DbContext
 
         List<ProductoMateriaPrima> productoMateriasPrimas = new List<ProductoMateriaPrima>
             {
-                new ProductoMateriaPrima { Id = 1, ProductoId = 1, MateriaPrimaId = 1, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // ESP32-CAM
-                new ProductoMateriaPrima { Id = 2, ProductoId = 1, MateriaPrimaId = 4, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Sensor Ultrasónico
-                new ProductoMateriaPrima { Id = 3, ProductoId = 1, MateriaPrimaId = 5, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
+                new ProductoMateriaPrima { Id = 1, ProductoId = 1, MateriaPrimaId = 1, CantidadRequerida = 1.00m}, // ESP32-CAM
+                new ProductoMateriaPrima { Id = 2, ProductoId = 1, MateriaPrimaId = 4, CantidadRequerida = 1.00m}, // Sensor Ultrasónico
+                new ProductoMateriaPrima { Id = 3, ProductoId = 1, MateriaPrimaId = 5, CantidadRequerida = 1.00m}, // Carcasa
                 
-                new ProductoMateriaPrima { Id = 4, ProductoId = 2, MateriaPrimaId = 2, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // ESP32-S3
-                new ProductoMateriaPrima { Id = 5, ProductoId = 2, MateriaPrimaId = 5, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Carcasa
-                new ProductoMateriaPrima { Id = 6, ProductoId = 2, MateriaPrimaId = 3, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Servo SG90
-                new ProductoMateriaPrima { Id = 7, ProductoId = 2, MateriaPrimaId = 4, CantidadRequerida = 1.00m, UnidadMedida = "Pieza" }, // Sensor Ultrasónico
+                new ProductoMateriaPrima { Id = 4, ProductoId = 2, MateriaPrimaId = 2, CantidadRequerida = 1.00m}, // ESP32-S3
+                new ProductoMateriaPrima { Id = 5, ProductoId = 2, MateriaPrimaId = 5, CantidadRequerida = 1.00m}, // Carcasa
+                new ProductoMateriaPrima { Id = 6, ProductoId = 2, MateriaPrimaId = 3, CantidadRequerida = 1.00m}, // Servo SG90
+                new ProductoMateriaPrima { Id = 7, ProductoId = 2, MateriaPrimaId = 4, CantidadRequerida = 1.00m}, // Sensor Ultrasónico
             };
 
         List<Compra> compras = new List<Compra>
             {
-                new Compra { 
-                    Id = 1, 
-                    NumeroCompra = "C-2025-001", 
+                new Compra {
+                    Id = 1,
+                    NumeroCompra = "C-2025-001",
                     FechaCompra = new DateTime(2025, 7, 1, 10, 0, 0),
                     ProveedorId = 1,
                     SubTotal = 17500.00m,
                     Total = 20300.00m,
-                    Estado = "Completada",
+                    Estatus = Estatus.Completada,
                     Observaciones = "Compra de componentes ESP32-CAM para producción mensual"
                 },
-                new Compra { 
-                    Id = 2, 
-                    NumeroCompra = "C-2025-002", 
+                new Compra {
+                    Id = 2,
+                    NumeroCompra = "C-2025-002",
                     FechaCompra = new DateTime(2025, 7, 5, 14, 30, 0),
                     ProveedorId = 2,
                     SubTotal = 8500.00m,
                     Total = 9860.00m,
-                    Estado = "En Proceso",
+                    Estatus = Estatus.EnProceso,
                     Observaciones = "Pedido de carcasas plásticas y accesorios"
                 }
             };
@@ -296,9 +286,9 @@ public class CABDB : DbContext
 
         List<Venta> ventas = new List<Venta>
             {
-                new Venta { 
-                    Id = 1, 
-                    NumeroVenta = "V-2025-001", 
+                new Venta {
+                    Id = 1,
+                    NumeroVenta = "V-2025-001",
                     FechaVenta = new DateTime(2025, 7, 10, 15, 30, 0),
                     UsuarioId = 3,
                     ProductoId = 1,
@@ -306,13 +296,13 @@ public class CABDB : DbContext
                     PrecioUnitario = 2500.00m,
                     SubTotal = 5000.00m,
                     Total = 5800.00m,
-                    Estado = "entregada",
+                    Estatus = Estatus.Entregada, // Pendiente, Pagada, Enviada, Entregada, Cancelada
                     DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
                     Observaciones = "Instalación en edificios A y B de la universidad"
                 },
-                new Venta { 
-                    Id = 2, 
-                    NumeroVenta = "V-2025-002", 
+                new Venta {
+                    Id = 2,
+                    NumeroVenta = "V-2025-002",
                     FechaVenta = new DateTime(2025, 7, 15, 11, 45, 0),
                     UsuarioId = 3,
                     ProductoId = 2,
@@ -320,7 +310,7 @@ public class CABDB : DbContext
                     PrecioUnitario = 4200.00m,
                     SubTotal = 4200.00m,
                     Total = 4872.00m,
-                    Estado = "en_proceso",
+                    Estatus = Estatus.EnProceso, // Pendiente, Pagada, Enviada, Entregada, Cancelada
                     DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
                     Observaciones = "Sistema para cafetería principal"
                 }
@@ -328,9 +318,9 @@ public class CABDB : DbContext
 
         List<Cotizacion> cotizaciones = new List<Cotizacion>
             {
-                new Cotizacion { 
-                    Id = 1, 
-                    NumeroCotizacion = "COT-2025-001", 
+                new Cotizacion {
+                    Id = 1,
+                    NumeroCotizacion = "COT-2025-001",
                     FechaCotizacion = new DateTime(2025, 7, 20, 9, 15, 0),
                     NombreCliente = "María González",
                     CorreoCliente = "maria.gonzalez@empresa.com",
@@ -341,13 +331,13 @@ public class CABDB : DbContext
                     PrecioUnitario = 4200.00m,
                     SubTotal = 21000.00m,
                     Total = 24360.00m,
-                    Estado = "Pendiente",
+                    Estatus = Estatus.Pendiente, // Pendiente, Aceptada, Rechazada, Expirada
                     Observaciones = "Cotización para implementación en 5 sucursales",
                     RequirimientosEspeciales = "Necesitan capacitación del personal y soporte técnico por 6 meses"
                 },
-                new Cotizacion { 
-                    Id = 2, 
-                    NumeroCotizacion = "COT-2025-002", 
+                new Cotizacion {
+                    Id = 2,
+                    NumeroCotizacion = "COT-2025-002",
                     FechaCotizacion = new DateTime(2025, 7, 22, 16, 20, 0),
                     NombreCliente = "Roberto Hernández",
                     CorreoCliente = "roberto.h@hotel.com",
@@ -358,7 +348,7 @@ public class CABDB : DbContext
                     PrecioUnitario = 4200.00m,
                     SubTotal = 12600.00m,
                     Total = 14616.00m,
-                    Estado = "Aprobada",
+                    Estatus = Estatus.Aprobada,
                     Observaciones = "Instalación en lobby, restaurante y áreas comunes",
                     RequirimientosEspeciales = "Integración con sistema de gestión hotelera existente"
                 }
@@ -381,7 +371,10 @@ public class CABDB : DbContext
         modelBuilder.Entity<Deteccion>(deteccion =>
         {
             deteccion.HasKey(d => d.Id);
-            deteccion.Property(d => d.Tipo).IsRequired().HasMaxLength(50);
+            deteccion.Property(d => d.Tipo)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasMaxLength(50);
             deteccion.Property(d => d.FechaHora).HasDefaultValueSql("GETDATE()");
             deteccion.HasOne(d => d.Clasificador)
                 .WithMany(c => c.Detecciones)
@@ -396,11 +389,14 @@ public class CABDB : DbContext
             usuario.Property(u => u.Nombre).IsRequired().HasMaxLength(100);
             usuario.Property(u => u.Correo).IsRequired().HasMaxLength(100);
             usuario.Property(u => u.Password).IsRequired().HasMaxLength(100);
+            usuario.Property(u => u.Rol)
+                .HasConversion<string>()
+                .IsRequired()
+                .HasDefaultValue(Rol.Cliente);
             usuario.Property(u => u.FechaCreacion).HasDefaultValueSql("GETDATE()");
             usuario.Property(u => u.FechaUltimoAcceso).HasDefaultValueSql("GETDATE()");
             usuario.Property(u => u.EnLinea).HasDefaultValue(false);
             usuario.Property(u => u.Activo).HasDefaultValue(true);
-            usuario.Property(u => u.Rol).HasMaxLength(15).HasDefaultValue("cliente");
             usuario.HasIndex(u => u.Correo).IsUnique();
             usuario.HasData(usuarios);
         });
@@ -445,9 +441,7 @@ public class CABDB : DbContext
             materia.Property(m => m.Nombre).IsRequired().HasMaxLength(100);
             materia.Property(m => m.Descripcion).IsRequired().HasMaxLength(500);
             materia.Property(m => m.PrecioUnitario).HasColumnType("decimal(10,2)");
-            materia.Property(m => m.UnidadMedida).IsRequired().HasMaxLength(20);
             materia.Property(m => m.Stock).HasColumnType("decimal(10,2)");
-            materia.Property(m => m.StockMinimo).HasColumnType("decimal(10,2)");
             materia.Property(m => m.Activo).HasDefaultValue(true);
             materia.Property(m => m.FechaCreacion).HasDefaultValueSql("GETDATE()");
             materia.HasData(materiasPrimas);
@@ -470,7 +464,6 @@ public class CABDB : DbContext
         {
             pmp.HasKey(p => p.Id);
             pmp.Property(p => p.CantidadRequerida).HasColumnType("decimal(10,2)");
-            pmp.Property(p => p.UnidadMedida).HasMaxLength(20);
             pmp.HasOne(p => p.Producto)
                 .WithMany(pr => pr.ProductoMateriasPrimas)
                 .HasForeignKey(p => p.ProductoId);
@@ -487,7 +480,7 @@ public class CABDB : DbContext
             compra.Property(c => c.FechaCompra).HasDefaultValueSql("GETDATE()");
             compra.Property(c => c.SubTotal).HasColumnType("decimal(10,2)");
             compra.Property(c => c.Total).HasColumnType("decimal(10,2)");
-            compra.Property(c => c.Estado).HasMaxLength(20).HasDefaultValue("Pendiente");
+            compra.Property(c => c.Estatus).HasDefaultValue(Estatus.Pendiente).HasConversion<string>();
             compra.Property(c => c.Observaciones).HasMaxLength(500);
             compra.HasOne(c => c.Proveedor)
                 .WithMany(p => p.Compras)
@@ -518,7 +511,7 @@ public class CABDB : DbContext
             venta.Property(v => v.PrecioUnitario).HasColumnType("decimal(10,2)");
             venta.Property(v => v.SubTotal).HasColumnType("decimal(10,2)");
             venta.Property(v => v.Total).HasColumnType("decimal(10,2)");
-            venta.Property(v => v.Estado).HasMaxLength(20).HasDefaultValue("Pendiente");
+            venta.Property(v => v.Estatus).HasDefaultValue(Estatus.Pendiente).HasConversion<string>();
             venta.Property(v => v.DireccionEnvio).HasMaxLength(500);
             venta.Property(v => v.Observaciones).HasMaxLength(500);
             venta.HasOne(v => v.Usuario)
@@ -542,7 +535,7 @@ public class CABDB : DbContext
             cotizacion.Property(c => c.PrecioUnitario).HasColumnType("decimal(10,2)");
             cotizacion.Property(c => c.SubTotal).HasColumnType("decimal(10,2)");
             cotizacion.Property(c => c.Total).HasColumnType("decimal(10,2)");
-            cotizacion.Property(c => c.Estado).HasMaxLength(20).HasDefaultValue("Pendiente");
+            cotizacion.Property(c => c.Estatus).HasDefaultValue(Estatus.Pendiente).HasConversion<string>();
             cotizacion.Property(c => c.Observaciones).HasMaxLength(1000);
             cotizacion.Property(c => c.RequirimientosEspeciales).HasMaxLength(1000);
             cotizacion.HasOne(c => c.Producto)

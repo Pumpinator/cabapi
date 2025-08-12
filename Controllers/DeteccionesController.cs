@@ -145,9 +145,9 @@ public class DeteccionesController : ControllerBase
                     mes = g.Key.Month,
                     ano = g.Key.Year,
                     total = g.Count(),
-                    organicos = g.Count(d => d.Tipo == "Organico"),
-                    valorizables = g.Count(d => d.Tipo == "Valorizable"),
-                    noValorizables = g.Count(d => d.Tipo == "No Valorizable")
+                    organicos = g.Count(d => d.Tipo == Tipo.Organico),
+                    valorizables = g.Count(d => d.Tipo == Tipo.Valorizable),
+                    noValorizables = g.Count(d => d.Tipo == Tipo.NoValorizable)
                 })
                 .OrderBy(t => t.ano)
                 .ThenBy(t => t.mes)
@@ -169,9 +169,9 @@ public class DeteccionesController : ControllerBase
                 zonaId = g.Key.Id,
                 zonaNombre = g.Key.Nombre,
                 totalDetecciones = g.Count(),
-                organicos = g.Count(d => d.Tipo == "Organico"),
-                valorizables = g.Count(d => d.Tipo == "Valorizable"),
-                noValorizables = g.Count(d => d.Tipo == "No Valorizable"),
+                organicos = g.Count(d => d.Tipo == Tipo.Organico),
+                valorizables = g.Count(d => d.Tipo == Tipo.Valorizable),
+                noValorizables = g.Count(d => d.Tipo == Tipo.NoValorizable),
                 porcentaje = Math.Round((double)g.Count() / _db.Detecciones.Count() * 100, 2)
             })
             .OrderByDescending(x => x.totalDetecciones)
@@ -244,9 +244,9 @@ public class DeteccionesController : ControllerBase
 
         var resultado = new
         {
-            valorizable = grupos.FirstOrDefault(g => g.Tipo == "valorizable")?.Count ?? 0,
-            no_valorizable = grupos.FirstOrDefault(g => g.Tipo == "no_valorizable")?.Count ?? 0,
-            organico = grupos.FirstOrDefault(g => g.Tipo == "organico")?.Count ?? 0
+            valorizable = grupos.FirstOrDefault(g => g.Tipo == Tipo.Valorizable)?.Count ?? 0,
+            no_valorizable = grupos.FirstOrDefault(g => g.Tipo == Tipo.NoValorizable)?.Count ?? 0,
+            organico = grupos.FirstOrDefault(g => g.Tipo == Tipo.Organico)?.Count ?? 0
         };
 
         return Ok(resultado);

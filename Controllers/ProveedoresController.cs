@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cabapi;
 using cabapi.Models;
 
 namespace cabapi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/proveedores")]
     [ApiController]
-    public class ProveedorsController : ControllerBase
+    public class ProveedoresController : ControllerBase
     {
         private readonly CABDB _context;
 
-        public ProveedorsController(CABDB context)
+        public ProveedoresController(CABDB context)
         {
             _context = context;
         }
 
-        // GET: api/Proveedors
+        // GET: api/proveedores
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Proveedor>>> GetProveedores()
         {
             return await _context.Proveedores.ToListAsync();
         }
 
-        // GET: api/Proveedors/id
+        // GET: api/proveedores/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Proveedor>> GetProveedor(int id)
         {
@@ -42,7 +36,7 @@ namespace cabapi.Controllers
             return proveedor;
         }
 
-        // PUT: api/Proveedors/5
+        // PUT: api/proveedores/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProveedor(int id, Proveedor proveedor)
         {
@@ -72,7 +66,7 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-        // POST: api/Proveedors
+        // POST: api/proveedores
         [HttpPost]
         public async Task<ActionResult<Proveedor>> PostProveedor(Proveedor proveedor)
         {
@@ -82,7 +76,7 @@ namespace cabapi.Controllers
             return CreatedAtAction("GetProveedor", new { id = proveedor.Id }, proveedor);
         }
 
-        // DELETE: api/Proveedors/5
+        // DELETE: api/proveedores/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProveedor(int id)
         {

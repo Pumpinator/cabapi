@@ -12,8 +12,6 @@ public class ProductoMateriaPrima
 
     public decimal CantidadRequerida { get; set; }
 
-    public string? UnidadMedida { get; set; }
-
     [JsonIgnore]
     public virtual Producto Producto { get; set; } = null!;
 

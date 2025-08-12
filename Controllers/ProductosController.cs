@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cabapi;
 using cabapi.Models;
 
 namespace cabapi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/productos")]
     [ApiController]
-    public class ProductoesController : ControllerBase
+    public class ProductosController : ControllerBase
     {
         private readonly CABDB _context;
 
-        public ProductoesController(CABDB context)
+        public ProductosController(CABDB context)
         {
             _context = context;
         }
 
-        // GET: api/Productoes
+        // GET: api/productos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
             return await _context.Productos.ToListAsync();
         }
 
-        // GET: api/Productoes/5
+        // GET: api/productos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProducto(int id)
         {
@@ -42,7 +36,7 @@ namespace cabapi.Controllers
             return producto;
         }
 
-        // PUT: api/Productoes/5
+        // PUT: api/productos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)
         {
@@ -72,7 +66,7 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-        // POST: api/Productoes
+        // POST: api/productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
@@ -82,7 +76,7 @@ namespace cabapi.Controllers
             return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
         }
 
-        // DELETE: api/Productoes/5
+        // DELETE: api/productos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)
         {

@@ -20,11 +20,13 @@ public class Usuario
 
     public bool Activo { get; set; } = true;
 
-    public string Rol { get; set; } = "cliente"; // cliente, admin, superadmin
+    public Rol Rol { get; set; } = Rol.Cliente;
 
     [JsonIgnore]
     public virtual ICollection<Venta> Ventas { get; set; } = new List<Venta>();
 
     [JsonIgnore]
     public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
+
+
 }

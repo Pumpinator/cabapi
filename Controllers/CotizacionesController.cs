@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cabapi;
 using cabapi.Models;
 
 namespace cabapi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cotizaciones")]
     [ApiController]
-    public class CotizacionsController : ControllerBase
+    public class CotizacionesController : ControllerBase
     {
         private readonly CABDB _context;
 
-        public CotizacionsController(CABDB context)
+        public CotizacionesController(CABDB context)
         {
             _context = context;
         }
 
-        // GET: api/Cotizacions
+        // GET: api/cotizaciones
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cotizacion>>> GetCotizaciones()
         {
             return await _context.Cotizaciones.ToListAsync();
         }
 
-        // GET: api/Cotizacions/5
+        // GET: api/cotizaciones/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Cotizacion>> GetCotizacion(int id)
         {
@@ -42,7 +36,7 @@ namespace cabapi.Controllers
             return cotizacion;
         }
 
-        // PUT: api/Cotizacions/5
+        // PUT: api/cotizaciones/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCotizacion(int id, Cotizacion cotizacion)
         {
@@ -72,7 +66,7 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-        // POST: api/Cotizacions
+        // POST: api/cotizaciones
         [HttpPost]
         public async Task<ActionResult<Cotizacion>> PostCotizacion(Cotizacion cotizacion)
         {
@@ -82,7 +76,7 @@ namespace cabapi.Controllers
             return CreatedAtAction("GetCotizacion", new { id = cotizacion.Id }, cotizacion);
         }
 
-        // DELETE: api/Cotizacions/5
+        // DELETE: api/cotizaciones/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCotizacion(int id)
         {

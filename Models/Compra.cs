@@ -16,7 +16,7 @@ public class Compra
 
     public decimal Total { get; set; }
 
-    public string Estado { get; set; } = "Pendiente"; // Pendiente, Recibida, Cancelada
+    public Estatus Estatus { get; set; } = Estatus.Pendiente;
 
     public string? Observaciones { get; set; }
 

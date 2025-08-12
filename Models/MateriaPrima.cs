@@ -12,11 +12,7 @@ public class MateriaPrima
 
     public required decimal PrecioUnitario { get; set; }
 
-    public required string UnidadMedida { get; set; } // kg, litros, piezas, etc.
-
     public decimal Stock { get; set; } = 0;
-
-    public decimal StockMinimo { get; set; } = 0;
 
     public bool Activo { get; set; } = true;
 

@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using cabapi;
 using cabapi.Models;
 
 namespace cabapi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/materiasprimas")]
     [ApiController]
-    public class MateriaPrimasController : ControllerBase
+    public class MateriasPrimasController : ControllerBase
     {
         private readonly CABDB _context;
 
-        public MateriaPrimasController(CABDB context)
+        public MateriasPrimasController(CABDB context)
         {
             _context = context;
         }
 
-        // GET: api/MateriaPrimas
+        // GET: api/materiasprimas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MateriaPrima>>> GetMateriasPrimas()
         {
             return await _context.MateriasPrimas.ToListAsync();
         }
 
-        // GET: api/MateriaPrimas/5
+        // GET: api/materiasprimas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MateriaPrima>> GetMateriaPrima(int id)
         {
@@ -42,7 +36,7 @@ namespace cabapi.Controllers
             return materiaPrima;
         }
 
-        // PUT: api/MateriaPrimas/5
+        // PUT: api/materiasprimas/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMateriaPrima(int id, MateriaPrima materiaPrima)
         {
@@ -72,7 +66,7 @@ namespace cabapi.Controllers
             return NoContent();
         }
 
-        // POST: api/MateriaPrimas
+        // POST: api/materiasprimas
         [HttpPost]
         public async Task<ActionResult<MateriaPrima>> PostMateriaPrima(MateriaPrima materiaPrima)
         {
@@ -82,7 +76,7 @@ namespace cabapi.Controllers
             return CreatedAtAction("GetMateriaPrima", new { id = materiaPrima.Id }, materiaPrima);
         }
 
-        // DELETE: api/MateriaPrimas/5
+        // DELETE: api/materiasprimas/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMateriaPrima(int id)
         {
