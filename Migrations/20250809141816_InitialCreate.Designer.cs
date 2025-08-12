@@ -12,7 +12,7 @@ using cabapi;
 namespace cabapi.Migrations
 {
     [DbContext(typeof(CABDB))]
-    [Migration("20250808234316_InitialCreate")]
+    [Migration("20250809141816_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
