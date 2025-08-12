@@ -5,5 +5,5 @@ public enum Tipo
     Organico,
     Valorizable,
     NoValorizable,
-    Reintentar
+    Error
 }

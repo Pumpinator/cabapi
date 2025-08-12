@@ -1,5 +1,5 @@
-using cabapi.Models;
 using Microsoft.AspNetCore.Mvc;
+using cabapi.Models;
 using OpenAI;
 using OpenAI.Chat;
 
@@ -11,26 +11,28 @@ public class InferenciasController : ControllerBase
 {
     private readonly CABDB _db;
     private readonly OpenAIClient _openAIClient;
+    private readonly ILogger<InferenciasController> _logger;
     private readonly Dictionary<string, string> _wasteMapping = new()
     {
-        ["organico"] = "organico",
-        ["organic"] = "organico",
-        ["compostable"] = "organico",
-        ["biodegradable"] = "organico",
+        ["organico"] = "Organico",
+        ["organic"] = "Organico",
+        ["compostable"] = "Organico",
+        ["biodegradable"] = "Organico",
 
-        ["valorizable"] = "valorizable",
-        ["reciclable"] = "valorizable",
-        ["recyclable"] = "valorizable",
+        ["valorizable"] = "Valorizable",
+        ["reciclable"] = "Valorizable",
+        ["recyclable"] = "Valorizable",
 
-        ["no_valorizable"] = "no_valorizable",
-        ["no_reciclable"] = "no_valorizable",
-        ["basura"] = "no_valorizable",
-        ["trash"] = "no_valorizable"
+        ["no_valorizable"] = "NoValorizable",
+        ["no_reciclable"] = "NoValorizable",
+        ["basura"] = "NoValorizable",
+        ["trash"] = "NoValorizable"
     };
 
-    public InferenciasController(CABDB db)
+    public InferenciasController(CABDB db, ILogger<InferenciasController> logger)
     {
         _db = db;
+        _logger = logger;
 
         var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         if (string.IsNullOrEmpty(apiKey))
@@ -55,7 +57,7 @@ public class InferenciasController : ControllerBase
 
             if (clasificadorId <= 0)
             {
-                return BadRequest(new { error = "El id del clasificador es inválido", success = false });
+                return BadRequest(new { error = "El id " + clasificadorId + " del clasificador es inválido", success = false });
             }
 
             byte[] imageBytes;
@@ -70,9 +72,16 @@ public class InferenciasController : ControllerBase
 
             var wasteType = await ClasificarConOpenAI(imageBytes);
 
-            if (wasteType == Tipo.Reintentar)
+            if (wasteType == Tipo.Error)
             {
-                return Ok("no_valorizable");
+                return Ok(new
+                {
+                    wasteType = Tipo.Error,
+                    success = false,
+                    shouldRetry = true,
+                    confidence = "low",
+                    timestamp = DateTime.UtcNow
+                });
             }
 
             var deteccion = new Deteccion
@@ -85,7 +94,7 @@ public class InferenciasController : ControllerBase
             _db.Detecciones.Add(deteccion);
             await _db.SaveChangesAsync();
 
-            return Ok(wasteType.ToString().ToLower());
+            return Ok(wasteType.ToString());
         }
         catch (Exception ex)
         {
@@ -114,15 +123,15 @@ public class InferenciasController : ControllerBase
 
             var wasteType = await ClasificarConOpenAI(imageBytes);
 
-            if (wasteType == Tipo.Reintentar)
+            if (wasteType == Tipo.Error)
             {
                 return Ok(new
                 {
-                    message = "No se pudo clasificar la imagen, por favor intente nuevamente con una imagen más clara",
-                    wasteType = Tipo.NoValorizable,
+                    wasteType = Tipo.Error,
                     success = false,
                     shouldRetry = true,
-                    confidence = "low"
+                    confidence = "low",
+                    timestamp = DateTime.UtcNow
                 });
             }
 
@@ -131,7 +140,6 @@ public class InferenciasController : ControllerBase
                 wasteType = wasteType,
                 success = true,
                 confidence = "high",
-                method = "openai-gpt4-vision",
                 timestamp = DateTime.UtcNow
             });
         }
@@ -152,16 +160,17 @@ INSTRUCCIONES IMPORTANTES:
 1. Analiza cuidadosamente la imagen
 2. Identifica el objeto o residuo principal en la imagen
 3. Responde ÚNICAMENTE con una de estas tres palabras exactas:
-   - 'organico' para residuos orgánicos (comida, frutas, verduras, restos de comida, cáscaras, etc.)
-   - 'valorizable' para residuos reciclables (plástico, vidrio, metal, papel, cartón, latas, botellas, etc.)
-   - 'no_valorizable' para residuos no reciclables (pañales, chicles, colillas, papel higiénico usado, etc.)
-   - 'reintentar' si la imagen no es clara, no contiene residuos visibles, o no puedes determinar el tipo
+   - 'Organico' para residuos orgánicos (comida, frutas, verduras, restos de comida, cáscaras, etc.)
+   - 'Valorizable' para residuos reciclables (plástico, vidrio, metal, papel, cartón, latas, botellas, etc.)
+   - 'NoValorizable' para residuos no reciclables (pañales, chicles, colillas, papel higiénico usado, etc.)
+   - 'Error' si la imagen no es clara y no puedes determinar el tipo dada las condiciones de la imagen
 
 EJEMPLOS:
-- Cáscara de plátano → organico
-- Botella de plástico → valorizable
-- Pañal usado → no_valorizable
-- Imagen borrosa → reintentar
+- Cáscara de plátano → Organico
+- Botella de plástico → Valorizable
+- Pañal usado → NoValorizable
+- Desconocido → NoValorizable
+- Imagen borrosa → Error
 
 Responde solo con la palabra correspondiente, sin explicaciones adicionales.";
 
@@ -186,18 +195,12 @@ Responde solo con la palabra correspondiente, sin explicaciones adicionales.";
 
             var classification = response.Value.Content[0].Text.Trim().ToLower();
 
-            if (_wasteMapping.TryGetValue(classification, out var wasteType))
-            {
-                return Enum.Parse<Tipo>(wasteType, true);
-            }
-
-            // Si no se puede mapear la clasificación, retornar "reintentar"
-            return Tipo.Reintentar;
+            return Enum.Parse<Tipo>(classification, true);
         }
         catch
         {
-            // En caso de error, retornar "reintentar"
-            return Tipo.Reintentar;
+            // En caso de error, retornar "error"
+            return Tipo.Error;
         }
     }
 }

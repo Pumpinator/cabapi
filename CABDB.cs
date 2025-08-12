@@ -19,6 +19,7 @@ public class CABDB : DbContext
     public DbSet<Compra> Compras { get; set; }
     public DbSet<CompraDetalle> CompraDetalles { get; set; }
     public DbSet<Venta> Ventas { get; set; }
+    public DbSet<VentaDetalle> VentaDetalles { get; set; }
     public DbSet<Cotizacion> Cotizaciones { get; set; }
 
     public CABDB(DbContextOptions<CABDB> options) : base(options) { }
@@ -294,7 +295,6 @@ public class CABDB : DbContext
                     NumeroVenta = "V-2025-001",
                     FechaVenta = new DateTime(2025, 7, 10, 15, 30, 0),
                     UsuarioId = 3,
-                    ProductoId = 1,
                     Cantidad = 2,
                     PrecioUnitario = 2500.00m,
                     SubTotal = 5000.00m,
@@ -308,7 +308,6 @@ public class CABDB : DbContext
                     NumeroVenta = "V-2025-002",
                     FechaVenta = new DateTime(2025, 7, 15, 11, 45, 0),
                     UsuarioId = 3,
-                    ProductoId = 2,
                     Cantidad = 1,
                     PrecioUnitario = 4200.00m,
                     SubTotal = 4200.00m,
@@ -317,6 +316,12 @@ public class CABDB : DbContext
                     DireccionEnvio = "Universidad Tecnológica de León, Blvd. Universidad Tecnológica #225, León, Gto.",
                     Observaciones = "Sistema para cafetería principal"
                 }
+            };
+
+        List<VentaDetalle> ventaDetalles = new List<VentaDetalle>
+            {
+                new VentaDetalle { Id = 1, VentaId = 1, ProductoId = 1, Cantidad = 2, PrecioUnitario = 2500.00m, SubTotal = 5000.00m },
+                new VentaDetalle { Id = 2, VentaId = 2, ProductoId = 2, Cantidad = 1, PrecioUnitario = 4200.00m, SubTotal = 4200.00m }
             };
 
         List<Cotizacion> cotizaciones = new List<Cotizacion>
@@ -523,10 +528,25 @@ public class CABDB : DbContext
             venta.HasOne(v => v.Usuario)
                 .WithMany(u => u.Ventas)
                 .HasForeignKey(v => v.UsuarioId);
-            venta.HasOne(v => v.Producto)
-                .WithMany(p => p.Ventas)
-                .HasForeignKey(v => v.ProductoId);
+            venta.HasMany(v => v.Detalles)
+                .WithOne(d => d.Venta)
+                .HasForeignKey(d => d.VentaId);
             venta.HasData(ventas);
+        });
+
+        modelBuilder.Entity<VentaDetalle>(detalle =>
+        {
+            detalle.HasKey(d => d.Id);
+            detalle.Property(d => d.Cantidad).HasColumnType("decimal(10,2)");
+            detalle.Property(d => d.PrecioUnitario).HasColumnType("decimal(10,2)");
+            detalle.Property(d => d.SubTotal).HasColumnType("decimal(10,2)");
+            detalle.HasOne(d => d.Venta)
+                .WithMany(v => v.Detalles)
+                .HasForeignKey(d => d.VentaId);
+            detalle.HasOne(d => d.Producto)
+                .WithMany()
+                .HasForeignKey(d => d.ProductoId);
+            detalle.HasData(ventaDetalles);
         });
 
         modelBuilder.Entity<Cotizacion>(cotizacion =>
