@@ -12,4 +12,6 @@ public class Proveedor
 
     public bool Activo { get; set; } = true;
 
+    [JsonIgnore]
+    public virtual ICollection<CompraDetalle> CompraDetalles { get; set; } = new List<CompraDetalle>();
 }

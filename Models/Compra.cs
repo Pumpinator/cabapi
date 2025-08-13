@@ -10,8 +10,6 @@ public class Compra
 
     public DateTime FechaCompra { get; set; } = DateTime.Now;
 
-    public int ProveedorId { get; set; }
-
     public decimal SubTotal { get; set; }
 
     public decimal Total { get; set; }
@@ -19,9 +17,6 @@ public class Compra
     public Estatus Estatus { get; set; } = Estatus.Pendiente;
 
     public string? Observaciones { get; set; }
-
-    [JsonIgnore]
-    public virtual Proveedor Proveedor { get; set; } = null!;
 
     [JsonIgnore]
     public virtual ICollection<CompraDetalle> Detalles { get; set; } = new List<CompraDetalle>();

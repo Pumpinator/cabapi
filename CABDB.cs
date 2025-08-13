@@ -269,14 +269,13 @@ public class CABDB : DbContext
                 new ProductoMateriaPrima { Id = 10, ProductoId = 2, MateriaPrimaId = 6, Cantidad = 1}, // PCA9685
         };
 
-        List<Compra> compras = new List<Compra>
+    List<Compra> compras = new List<Compra>
         {
             new Compra
             {
                 Id = 1,
                 NumeroCompra = "CP-2025-001",
                 FechaCompra = new DateTime(2025, 6, 10, 9, 0, 0),
-                ProveedorId = 1,
                 SubTotal = 2400.00m,
                 Total = 2784.00m,        // con IVA 16%
                 Estatus = Estatus.Pagada,
@@ -287,7 +286,6 @@ public class CABDB : DbContext
                 Id = 2,
                 NumeroCompra = "CP-2025-002",
                 FechaCompra = new DateTime(2025, 6, 11, 14, 30, 0),
-                ProveedorId = 2,
                 SubTotal = 1000.00m,
                 Total = 1160.00m,        // con IVA 16%
                 Estatus = Estatus.Entregada,
@@ -295,13 +293,14 @@ public class CABDB : DbContext
             }
         };
 
-        List<CompraDetalle> compraDetalles = new List<CompraDetalle>
+    List<CompraDetalle> compraDetalles = new List<CompraDetalle>
         {
             new CompraDetalle
             {
                 Id = 1,
                 CompraId = 1,
                 MateriaPrimaId = 1,
+        ProveedorId = 1,
                 Cantidad = 4,
                 PrecioUnitario = 600.00m,
                 SubTotal = 2400.00m
@@ -311,6 +310,7 @@ public class CABDB : DbContext
                 Id = 2,
                 CompraId = 2,
                 MateriaPrimaId = 3,
+        ProveedorId = 2,
                 Cantidad = 5,
                 PrecioUnitario = 100.00m,
                 SubTotal = 500.00m
@@ -320,6 +320,7 @@ public class CABDB : DbContext
                 Id = 3,
                 CompraId = 2,
                 MateriaPrimaId = 5,
+        ProveedorId = 2,
                 Cantidad = 2,
                 PrecioUnitario = 250.00m,
                 SubTotal = 500.00m
@@ -362,7 +363,7 @@ public class CABDB : DbContext
                 new VentaDetalle { Id = 2, VentaId = 2, ProductoId = 2, Cantidad = 1, PrecioUnitario = 4200.00m, SubTotal = 4200.00m }
             };
 
-        modelBuilder.Entity<Clasificador>(clasificador =>
+    modelBuilder.Entity<Clasificador>(clasificador =>
         {
             clasificador.HasKey(c => c.Id);
             clasificador.Property(c => c.Nombre).IsRequired().HasMaxLength(100);
@@ -375,6 +376,49 @@ public class CABDB : DbContext
                 .HasForeignKey(c => c.ZonaId);
             clasificador.HasData(clasificadores);
         });
+        // Relaciones para Compra / CompraDetalle / Proveedor / MateriaPrima
+        modelBuilder.Entity<Compra>(compra =>
+        {
+            compra.HasKey(c => c.Id);
+            compra.Property(c => c.NumeroCompra).IsRequired().HasMaxLength(50);
+            compra.Property(c => c.FechaCompra).HasDefaultValueSql("GETDATE()");
+            compra.Property(c => c.SubTotal).HasColumnType("decimal(18,2)");
+            compra.Property(c => c.Total).HasColumnType("decimal(18,2)");
+            compra.Property(c => c.Estatus).HasConversion<string>().HasMaxLength(50);
+            compra.HasMany(c => c.Detalles)
+                .WithOne(d => d.Compra)
+                .HasForeignKey(d => d.CompraId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<CompraDetalle>(detalle =>
+        {
+            detalle.HasKey(d => d.Id);
+            detalle.Property(d => d.PrecioUnitario).HasColumnType("decimal(18,2)");
+            detalle.Property(d => d.SubTotal).HasColumnType("decimal(18,2)");
+            detalle.HasOne(d => d.MateriaPrima)
+                .WithMany(m => m.CompraDetalles)
+                .HasForeignKey(d => d.MateriaPrimaId);
+            detalle.HasOne(d => d.Proveedor)
+                .WithMany(p => p.CompraDetalles)
+                .HasForeignKey(d => d.ProveedorId);
+        });
+
+        modelBuilder.Entity<Proveedor>(proveedor =>
+        {
+            proveedor.HasKey(p => p.Id);
+            proveedor.Property(p => p.Nombre).IsRequired().HasMaxLength(150);
+            // Conversor para string[] Contacto
+            proveedor.Property(p => p.Contacto)
+                .HasConversion(
+                    v => string.Join("|", v),
+                    v => v.Split('|', StringSplitOptions.RemoveEmptyEntries))
+                .Metadata.SetValueComparer(new ValueComparer<string[]>(
+                    (a, b) => a!.SequenceEqual(b!),
+                    a => a.Aggregate(0, (acc, s) => HashCode.Combine(acc, s.GetHashCode())),
+                    a => a.ToArray()));
+        });
+
 
         modelBuilder.Entity<Deteccion>(deteccion =>
         {

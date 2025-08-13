@@ -10,6 +10,8 @@ public class CompraDetalle
 
     public int MateriaPrimaId { get; set; }
 
+    public int ProveedorId { get; set; }
+
     public int Cantidad { get; set; }
 
     public decimal PrecioUnitario { get; set; }
@@ -21,4 +23,7 @@ public class CompraDetalle
 
     [JsonIgnore]
     public virtual MateriaPrima MateriaPrima { get; set; } = null!;
+
+    [JsonIgnore]
+    public virtual Proveedor Proveedor { get; set; } = null!;
 }
