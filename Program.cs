@@ -69,6 +69,27 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+// Crea CABDB (esquema + datos semilla de HasData) en el primer arranque.
+// No hay migraciones en el proyecto, por eso EnsureCreated y no Migrate.
+// Reintenta porque el contenedor de SQL Server tarda en aceptar conexiones al bootear.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<CABDB>();
+    for (var intento = 1; ; intento++)
+    {
+        try
+        {
+            db.Database.EnsureCreated();
+            break;
+        }
+        catch (Exception ex) when (intento < 10)
+        {
+            app.Logger.LogWarning("SQL Server no listo (intento {Intento}): {Mensaje}. Reintentando en 5s...", intento, ex.Message);
+            Thread.Sleep(5000);
+        }
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
